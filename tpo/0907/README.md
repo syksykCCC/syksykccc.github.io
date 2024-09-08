@@ -22,7 +22,7 @@ interpretation 理解，解释
 
 nursery 育儿室
 
-innocence 无知
+innocence 无辜、无知
 
 discernable 可辨别的，可认识的
 

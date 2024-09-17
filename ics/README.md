@@ -80,12 +80,63 @@ int tadd_ok(int x, int y) {
 `x = y = INT_MIN`
 
 **2.35**
+`x * y = p + t * 2^w`，其中 `t != 0` 当且仅当溢出。
+而 `p = x * q + r`，其中 `0 <= r < x`，故 `p / x = q`。
+`q = y` 成立时当且仅当 `r = t = 0`，也就是没有发生溢出。
 
+**2.36**
+```c
+int tmult_ok(int x, int y) {
+  int64_t p = (int64_t)x * y;
+  return INT_MIN <= p && p <= INT_MAX;
+}
+```
+
+**2.37**
+A. 乘法过程不会发生溢出
+B. `if(asize > UINT_MAX) return NULL;` 如果产生溢出就分配失败。
+
+**2.39**
+直接 `- (x << m)`
+
+**2.40**
+`(x << 2) + (x << 1)`
+`(x << 5) - x`
+`(x << 1) - (x << 3)`
+`(x << 6) - (x << 3) - x`
+
+**2.41**
+如果 `n = m` 则用第一种，`n = m + 1` 都可以，否则用第二种
+
+**2.42**
+```c
+int div16(int x) {
+  int t = x >> 31 & 1;
+  return ((t << 4) - t + x) >> 4;
+}
+```
+
+**2.43**
+`M = 31`，`N = 8`
+
+**2.59**
+```c
+x & 0xFF | (y >> 2 << 2)
+```
+
+**2.60**
+```c
+unsigned replace_byte(unsigned x, int i, unsigned char b) {
+  unsigned h = x >> ((i + 1) << 3);
+  unsigned l = x & ((1u << (i << 3)) - 1);
+  return (h << 8 | b) << (i << 3) | l;
+}
+```
 
 **2.71**
 ```c
 int xbyte(packed_t word, int bytenum) {
-  unsigned t = ((word >> (bytenum << 3)) << 24 >> 24) ;
+  unsigned t = ((word >> (bytenum << 3)) << 24 >> 24);
   return (t - ((t << 24 >> 31 << 8)));
 }
 ```

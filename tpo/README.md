@@ -1,5 +1,6 @@
 | 日期 | 编号 | 类别 | 主题 | 篇目 |
 | :----------: | :----------: | :----------: | :----------: | :----------: |
+| 2024 / 10 / 11 | TPO 40 | Conversation |  | [Ask A Librarian For Recommendation For A Job](1011/) |
 | 2024 / 10 / 9 | TPO 42 | Lecture | Physics | [Electromagnetic Waves](1009/) |
 | 2024 / 10 / 8 | TPO 42 | Lecture | Children's Literature | [Theodor Seuss Geisel](1008/) |
 | 2024 / 10 / 7 | TPO 42 | Lecture | Psychology | [Approximate Number Sense](1007/) |

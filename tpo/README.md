@@ -1,5 +1,6 @@
 | 日期 | 编号 | 类别 | 主题 | 篇目 |
 | :----------: | :----------: | :----------: | :----------: | :----------: |
+| 2024 / 10 / 20 | TPO 41 | Lecture | Botany | [Desert Plants](1020/) |
 | 2024 / 10 / 15 | TPO 41 | Conversation |  | [Get Help On Paying Tuition](1015/) |
 | 2024 / 10 / 14 | TPO 41 | Conversation |  | [Suggestions On Research Project](1014/) |
 | 2024 / 10 / 11 | TPO 40 | Conversation |  | [Ask A Librarian For Recommendation For A Job](1011/) |

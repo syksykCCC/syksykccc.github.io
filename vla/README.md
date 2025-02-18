@@ -20,6 +20,6 @@
 [[arxiv](https://arxiv.org/abs/2501.04693)]
 [[note](BS.html)]
 
-**Chameleon: Mixed-Modal Early-Fusion Foundation Models**
-[[arxiv](https://arxiv.org/abs/2405.09818)]
-[[note](Chameleon.html)]
+**CogACT: A Foundational Vision-Language-Action Model for Synergizing Cognition and Action in Robotic Manipulation**
+[[arxiv](https://arxiv.org/abs/2411.19650)]
+[[note](CogACT.html)]

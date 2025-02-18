@@ -1,4 +1,4 @@
-### VLA Papers
+## VLA Papers
 
 **3D Diffuser Actor: Policy Diffusion with 3D Scene Representations**
 [[arxiv](https://arxiv.org/abs/2402.10885)]
@@ -14,4 +14,12 @@
 
 **AffordDP: Generalizable Diffusion Policy with Transferable Affordance**
 [[arxiv](https://arxiv.org/abs/2412.03142)]
-[[note](ADP.html)]
+[[note](AffordDP.html)]
+
+**Beyond Sight: Finetuning Generalist Robot Policies with Heterogeneous Sensors via Language Grounding**
+[[arxiv](https://arxiv.org/abs/2501.04693)]
+[[note](BS.html)]
+
+**Chameleon: Mixed-Modal Early-Fusion Foundation Models**
+[[arxiv](https://arxiv.org/abs/2405.09818)]
+[[note](Chameleon.html)]

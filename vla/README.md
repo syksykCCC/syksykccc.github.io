@@ -11,3 +11,7 @@
 **3D-VLA: A 3D Vision-Language-Action Generative World Model**
 [[arxiv](https://arxiv.org/abs/2403.09631)]
 [[note](3DVLA.html)]
+
+**AffordDP: Generalizable Diffusion Policy with Transferable Affordance**
+[[arxiv](https://arxiv.org/abs/2412.03142)]
+[[note](ADP.html)]

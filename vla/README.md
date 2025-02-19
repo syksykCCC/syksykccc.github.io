@@ -1,4 +1,4 @@
-## VLA Papers
+一些关于 Vision-Language-Action (VLA) 大模型的论文选读
 
 **3D Diffuser Actor: Policy Diffusion with 3D Scene Representations**
 [[arxiv](https://arxiv.org/abs/2402.10885)]

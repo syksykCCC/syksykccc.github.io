@@ -4,6 +4,6 @@
 
 [VLA 论文乱读](vla/)
 
-[随机算法 学习笔记](ra/)
+[随机算法学习笔记](ra/)
 
-友情链接：[Stellary 大神](https://socialzxy.github.io/)
+友情链接：[Stellary](https://socialzxy.github.io/)

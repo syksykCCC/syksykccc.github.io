@@ -27,3 +27,7 @@
 **DeeR-VLA: Dynamic Inference of Multimodal Large Language Models for Efficient Robot Execution**
 [[arxiv](https://arxiv.org/abs/2411.02359)]
 [[note](DeeRVLA.html)]
+
+**DexVLA: Vision-Language Model with Plug-In Diffusion Expert for General Robot Control**
+[[arxiv](https://arxiv.org/abs/2502.05855)]
+[[note](DexVLA.html)]

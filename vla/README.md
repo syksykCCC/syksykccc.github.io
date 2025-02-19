@@ -23,3 +23,7 @@
 **CogACT: A Foundational Vision-Language-Action Model for Synergizing Cognition and Action in Robotic Manipulation**
 [[arxiv](https://arxiv.org/abs/2411.19650)]
 [[note](CogACT.html)]
+
+**DeeR-VLA: Dynamic Inference of Multimodal Large Language Models for Efficient Robot Execution**
+[[arxiv](https://arxiv.org/abs/2411.02359)]
+[[note](DeeRVLA.html)]

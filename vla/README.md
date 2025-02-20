@@ -31,3 +31,11 @@
 **DexVLA: Vision-Language Model with Plug-In Diffusion Expert for General Robot Control**
 [[arxiv](https://arxiv.org/abs/2502.05855)]
 [[note](DexVLA.html)]
+
+**FAST: Efficient Action Tokenization for Vision-Language-Action Models**
+[[arxiv](https://arxiv.org/abs/2501.09747)]
+[[note](FAST.html)]
+
+**Improving Vision-Language-Action Models via Chain-of-Affordance**
+[[arxiv](https://arxiv.org/abs/2412.20451)]
+[[note](CoA.html)]

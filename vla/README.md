@@ -39,3 +39,15 @@
 **Improving Vision-Language-Action Models via Chain-of-Affordance**
 [[arxiv](https://arxiv.org/abs/2412.20451)]
 [[note](CoA.html)]
+
+**Diffusion-VLA: Scaling Robot Foundation Models via Unified Diffusion and Autoregression**
+[[arxiv](https://arxiv.org/abs/2412.03293)]
+[[note](DiVLA.html)]
+
+**RDT-1B: a Diffusion Foundation Model for Bimanual Manipulation**
+[[arxiv](https://arxiv.org/abs/2410.07864)]
+[[note](RDT1B.html)]
+
+**Robo-ABC: Affordance Generalization Beyond Categories via Semantic Correspondence for Robot Manipulation**
+[[arxiv](https://arxiv.org/abs/2401.07487)]
+[[note](RoboABC.html)]

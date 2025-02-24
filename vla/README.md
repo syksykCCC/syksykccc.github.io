@@ -1,5 +1,7 @@
 一些关于 3D Robotic 和 Vision-Language-Action (VLA) 大模型的论文选读
 
+-----
+
 **Act3D: 3D Feature Field Transformers for Multi-Task Robotic Manipulation**
 [[arxiv](https://arxiv.org/abs/2306.17817)]
 [[note](Act3D.html)]
@@ -15,6 +17,8 @@
 **3D Diffusion Policy: Generalizable Visuomotor Policy Learning via Simple 3D Representations**
 [[arxiv](https://arxiv.org/abs/2403.03954)]
 [[note](3DDP.html)]
+
+-------
 
 **3D-VLA: A 3D Vision-Language-Action Generative World Model**
 [[arxiv](https://arxiv.org/abs/2403.09631)]

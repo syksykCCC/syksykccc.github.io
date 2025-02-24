@@ -1,4 +1,12 @@
-一些关于 Vision-Language-Action (VLA) 大模型的论文选读
+一些关于 3D Robotic 和 Vision-Language-Action (VLA) 大模型的论文选读
+
+**Act3D: 3D Feature Field Transformers for Multi-Task Robotic Manipulation**
+[[arxiv](https://arxiv.org/abs/2306.17817)]
+[[note](Act3D.html)]
+
+**3D-MVP: 3D Multiview Pretraining for Robotic Manipulation**
+[[arxiv](https://arxiv.org/abs/2406.18158)]
+[[note](3DMVP.html)]
 
 **3D Diffuser Actor: Policy Diffusion with 3D Scene Representations**
 [[arxiv](https://arxiv.org/abs/2402.10885)]

@@ -65,7 +65,7 @@
             width: 100%;  
             height: 100%;  
             z-index: -1;  
-            opacity: 0.15;  
+            opacity: 0.1; /* 降低透明度，使背景更淡 */  
             pointer-events: none;  
             overflow: hidden;  
             font-family: 'JetBrains Mono', monospace;  
@@ -74,7 +74,7 @@
         .binary-column {  
             position: absolute;  
             top: -20px;  
-            font-size: 18px;  
+            font-size: 24px; /* 增大字体大小 */  
             color: var(--primary);  
             animation-name: binary-fall;  
             animation-timing-function: linear;  
@@ -115,7 +115,7 @@
                     <p class="text-slate-500 mt-1">Information Theory · 2025 Spring</p>  
                 </div>  
                 <div class="formula text-slate-700 text-base sm:text-right">  
-                    <span class="var">H</span>[<span class="var">X</span>] = -∑<sub><span class="var">i</span></sub> <span class="var">p</span>(<span class="var">x</span><sub>i</sub>) log <span class="var">p</span>(<span class="var">x</span><sub>i</sub>)  
+                    <span class="var">H</span>[<span class="var">X</span>] = -∑<sub class="var">i</sub> <span class="var">p</span>(<span class="var">x</span><sub class="var">i</sub>) log <span class="var">p</span>(<span class="var">x</span><sub class="var">i</sub>)  
                 </div>  
             </div>  
         </header>  
@@ -147,7 +147,7 @@
             const width = window.innerWidth;  
             
             // 创建多列随机01字符  
-            const columnCount = Math.floor(width / 40); // 每列的宽度  
+            const columnCount = Math.floor(width / 50); // 每列的宽度增加，减少列数  
             
             for (let i = 0; i < columnCount; i++) {  
                 createBinaryColumn(i, columnCount);  

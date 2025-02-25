@@ -1,0 +1,289 @@
+<!DOCTYPE html>  
+<html lang="zh-CN">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>随机算法课程笔记</title>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <style>  
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Cambria:ital,wght@0,400;0,700;1,400&display=swap');  
+        
+        :root {  
+            --primary: #6366f1;  
+            --secondary: #8b5cf6;  
+            --tertiary: #ec4899;  
+            --bg-start: #f9fafb;  
+            --bg-end: #f3f4f6;  
+            --card: #ffffff;  
+            --text: #1e293b;  
+        }  
+        
+        body {  
+            font-family: 'Noto Sans SC', sans-serif;  
+            background: linear-gradient(to bottom right, var(--bg-start), var(--bg-end));  
+            color: var(--text);  
+            min-height: 100vh;  
+        }  
+        
+        .formula {  
+            font-family: 'Times New Roman', 'Cambria', serif;  
+        }  
+        
+        .formula .var {  
+            font-style: italic;  
+        }  
+        
+        .lecture-card {  
+            position: relative;  
+            transition: all 0.3s ease;  
+            overflow: hidden;  
+            border-radius: 0.5rem;  
+            border: 1px solid rgba(0, 0, 0, 0.05);  
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);  
+            background-color: var(--card);  
+        }  
+        
+        .lecture-card:hover {  
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);  
+            transform: translateY(-2px);  
+        }  
+        
+        .lecture-card::before {  
+            content: '';  
+            position: absolute;  
+            left: 0;  
+            top: 0;  
+            width: 4px;  
+            height: 100%;  
+            background: linear-gradient(to bottom, var(--primary), var(--tertiary));  
+        }  
+        
+        .topic-tag {  
+            display: inline-block;  
+            font-size: 0.75rem;  
+            padding: 0.125rem 0.5rem;  
+            margin-right: 0.5rem;  
+            margin-bottom: 0.5rem;  
+            border-radius: 9999px;  
+            background-color: rgba(99, 102, 241, 0.1);  
+            color: var(--primary);  
+            transition: all 0.2s ease;  
+        }  
+        
+        .topic-tag:hover {  
+            background-color: rgba(99, 102, 241, 0.2);  
+        }  
+        
+        #randomized-bg {  
+            position: fixed;  
+            top: 0;  
+            left: 0;  
+            width: 100%;  
+            height: 100%;  
+            z-index: -1;  
+            opacity: 0.4;  
+            pointer-events: none;  
+            overflow: hidden;  
+        }  
+
+        .probability-particle {  
+            position: absolute;  
+            border-radius: 50%;  
+            opacity: 0.5;  
+            transition: transform 0.5s ease-out;  
+        }  
+    </style>  
+</head>  
+<body class="py-8 px-4 sm:px-6 lg:px-8">  
+    <!-- 随机算法背景效果 -->  
+    <div id="randomized-bg"></div>  
+    
+    <div class="max-w-3xl mx-auto">  
+        <!-- 页眉 -->  
+        <header class="mb-12 pb-4 border-b border-slate-200">  
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">  
+                <div>  
+                    <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">  
+                        随机算法课程笔记  
+                    </h1>  
+                    <p class="text-slate-500 mt-1">Randomized Algorithms · 2025 Spring</p>  
+                </div>  
+                <div class="formula text-slate-700 text-base sm:text-right">  
+                    Pr[<span class="var">X</span> > <span class="var">a</span>] ≤ E[<span class="var">X</span>]/<span class="var">a</span>  
+                </div>  
+            </div>  
+        </header>  
+        
+        <!-- 主体内容：只包含Lecture入口 -->  
+        <main>  
+            <!-- Lecture 3 -->  
+            <div class="lecture-card p-5 pl-6 mb-6">  
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">  
+                    <h2 class="text-xl font-bold text-indigo-700">  
+                        <a href="Lec3.html" class="hover:text-purple-700 transition-colors">Lecture 3</a>  
+                    </h2>  
+                    <span class="text-slate-500 font-mono text-sm mt-1 sm:mt-0">2025 / 2 / 24</span>  
+                </div>  
+                <div class="mt-3">  
+                    <span class="topic-tag">Primality</span> <span class="topic-tag">Probabilistic method</span> <span class="topic-tag">Independent set</span> <span class="topic-tag">Crossing number</span>  
+                </div>  
+            </div>  
+    
+  
+            <!-- Lecture 2 -->  
+            <div class="lecture-card p-5 pl-6 mb-6">  
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">  
+                    <h2 class="text-xl font-bold text-indigo-700">  
+                        <a href="Lec2.html" class="hover:text-purple-700 transition-colors">Lecture 2</a>  
+                    </h2>  
+                    <span class="text-slate-500 font-mono text-sm mt-1 sm:mt-0">2025 / 2 / 20</span>  
+                </div>  
+                <div class="mt-3">  
+                    <span class="topic-tag">Bipartite matching</span> <span class="topic-tag">Perfect matching in parallel</span> <span class="topic-tag">Fingerprinting</span>  
+                </div>  
+            </div>  
+    
+  
+            <!-- Lecture 1 -->  
+            <div class="lecture-card p-5 pl-6 mb-6">  
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">  
+                    <h2 class="text-xl font-bold text-indigo-700">  
+                        <a href="Lec1.html" class="hover:text-purple-700 transition-colors">Lecture 1</a>  
+                    </h2>  
+                    <span class="text-slate-500 font-mono text-sm mt-1 sm:mt-0">2025 / 2 / 17</span>  
+                </div>  
+                <div class="mt-3">  
+                    <span class="topic-tag">Matrix multiplication</span> <span class="topic-tag">Associativity</span> <span class="topic-tag">Polynomial identities</span>  
+                </div>  
+            </div>  
+      
+        </main>  
+        
+        <!-- 页脚 -->  
+        <footer class="mt-16 pt-4 border-t border-slate-200 text-center text-sm text-slate-500">  
+            <p>© 2025 syksykCCC</p>  
+        </footer>  
+    </div>  
+    
+    <script>  
+        // 生成随机算法背景效果  
+        function initRandomizedBackground() {  
+            const bg = document.getElementById('randomized-bg');  
+            const width = window.innerWidth;  
+            const height = window.innerHeight;  
+            
+            // 马尔可夫链/随机游走效果  
+            let paths = [];  
+            for (let i = 0; i < 8; i++) {  
+                let path = {  
+                    x: Math.random() * width,  
+                    y: Math.random() * height,  
+                    points: [],  
+                    element: document.createElement('div')  
+                };  
+                
+                path.element.style.position = 'absolute';  
+                path.element.style.top = '0';  
+                path.element.style.left = '0';  
+                path.element.style.pointerEvents = 'none';  
+                path.element.style.opacity = '0.15';  
+                bg.appendChild(path.element);  
+                
+                paths.push(path);  
+            }  
+            
+            // 随机分布的点 (蒙特卡洛模拟)  
+            for (let i = 0; i < 160; i++) {  
+                createRandomParticle();  
+            }  
+            
+            function createRandomParticle() {  
+                const particle = document.createElement('div');  
+                particle.classList.add('probability-particle');  
+                
+                const size = Math.random() * 4 + 1;  
+                const x = Math.random() * width;  
+                const y = Math.random() * height;  
+                
+                particle.style.width = `${size}px`;  
+                particle.style.height = `${size}px`;  
+                particle.style.left = `${x}px`;  
+                particle.style.top = `${y}px`;  
+                
+                // 选择三种主题色之一  
+                const colors = ['#6366f1', '#8b5cf6', '#ec4899'];  
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];  
+                
+                bg.appendChild(particle);  
+            }  
+            
+            // 更新随机游走路径  
+            function updatePaths() {  
+                paths.forEach(path => {  
+                    // 随机方向变化  
+                    path.x += (Math.random() - 0.5) * 10;  
+                    path.y += (Math.random() - 0.5) * 10;  
+                    
+                    // 边界处理  
+                    path.x = Math.max(0, Math.min(width, path.x));  
+                    path.y = Math.max(0, Math.min(height, path.y));  
+                    
+                    path.points.push({x: path.x, y: path.y});  
+                    
+                    // 保持路径长度  
+                    if (path.points.length > 20) {  
+                        path.points.shift();  
+                    }  
+                    
+                    // 绘制路径  
+                    let pathHTML = '';  
+                    if (path.points.length > 1) {  
+                        pathHTML = '<svg width="' + width + '" height="' + height + '" style="position:absolute;top:0;left:0;">';  
+                        pathHTML += '<path d="M ';  
+                        
+                        path.points.forEach((point, i) => {  
+                            pathHTML += point.x + ' ' + point.y + ' ';  
+                            if (i < path.points.length - 1) pathHTML += 'L ';  
+                        });  
+                        
+                        pathHTML += '" stroke="rgba(99, 102, 241, 0.3)" stroke-width="1" fill="none" />';  
+                        pathHTML += '</svg>';  
+                    }  
+                    
+                    path.element.innerHTML = pathHTML;  
+                });  
+                
+                // 随机更新一些粒子位置 (布朗运动效果)  
+                const particles = document.querySelectorAll('.probability-particle');  
+                particles.forEach(particle => {  
+                    if (Math.random() < 0.05) { // 5%的概率移动  
+                        const currentX = parseFloat(particle.style.left);  
+                        const currentY = parseFloat(particle.style.top);  
+                        
+                        const newX = currentX + (Math.random() - 0.5) * 30;  
+                        const newY = currentY + (Math.random() - 0.5) * 30;  
+                        
+                        particle.style.transform = `translate(${newX - currentX}px, ${newY - currentY}px)`;  
+                        
+                        // 延迟后重置位置，形成连续运动  
+                        setTimeout(() => {  
+                            particle.style.left = `${newX}px`;  
+                            particle.style.top = `${newY}px`;  
+                            particle.style.transform = 'translate(0, 0)';  
+                        }, 500);  
+                    }  
+                });  
+                
+                requestAnimationFrame(updatePaths);  
+            }  
+            
+            updatePaths();  
+        }  
+        
+        // 初始化  
+        window.addEventListener('DOMContentLoaded', () => {  
+            initRandomizedBackground();  
+        });  
+    </script>  
+</body>  
+</html>

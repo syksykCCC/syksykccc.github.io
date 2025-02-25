@@ -1,0 +1,109 @@
+<!DOCTYPE html>  
+<html lang="zh-CN">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>信息论课程笔记</title>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <style>  
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap');  
+        
+        :root {  
+            --primary: #2563eb;  
+            --secondary: #9333ea;  
+            --background: #f8fafc;  
+            --text: #1e293b;  
+        }  
+        
+        body {  
+            font-family: 'Noto Sans SC', 'JetBrains Mono', monospace, sans-serif;  
+            background-color: var(--background);  
+            color: var(--text);  
+            position: relative;  
+            overflow-x: hidden;  
+        }  
+        
+        .binary-background {  
+            position: absolute;  
+            top: 0;  
+            left: 0;  
+            right: 0;  
+            bottom: 0;  
+            opacity: 0.05;  
+            z-index: -1;  
+            overflow: hidden;  
+            user-select: none;  
+            pointer-events: none;  
+        }  
+        
+        .formula {  
+            font-family: 'JetBrains Mono', monospace;  
+        }  
+        
+        .link-hover:hover {  
+            background: linear-gradient(90deg, var(--primary), var(--secondary));  
+            background-clip: text;  
+            -webkit-background-clip: text;  
+            color: transparent;  
+            text-decoration: none;  
+        }  
+    </style>  
+</head>  
+<body class="min-h-screen py-10 px-4 sm:px-6">  
+    <!-- 二进制背景 -->  
+    <div class="binary-background" id="binary"></div>  
+    
+    <div class="max-w-3xl mx-auto">  
+        <!-- 页眉 -->  
+        <header class="mb-10 pb-4 border-b border-slate-200">  
+            <div class="flex items-center justify-between">  
+                <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">  
+                    信息论 旁听笔记  
+                </h1>  
+            </div>  
+        </header>  
+        
+        <!-- 主要内容 -->  
+        <main>  
+            <div class="mb-8">  
+                <h2 class="text-xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">  
+                    2025 Spring 信息论 笔记  
+                </h2>  
+                
+                <div class="space-y-4 mt-6">  
+                    <div class="p-4 bg-white rounded-lg shadow-sm border border-slate-100 hover:shadow-md transition-shadow">  
+                        <div class="flex items-baseline">  
+                            <span class="text-slate-500 mr-3 font-mono">2025/2/25</span>  
+                            <a href="Lec2.html" class="text-blue-600 hover:text-purple-600 transition-colors link-hover font-semibold">  
+                                Lecture 2  
+                            </a>  
+                        </div>  
+                    </div>  
+                </div>  
+            </div>  
+        </main>  
+        
+        <!-- 页脚 -->  
+        <footer class="mt-12 pt-4 border-t border-slate-200 text-center text-sm text-slate-500">  
+            <p>© syksykCCC</p>  
+        </footer>  
+    </div>  
+    
+    <script>  
+        // 生成二进制背景  
+        function generateBinary() {  
+            const binaryEl = document.getElementById('binary');  
+            let binary = '';  
+            
+            for (let i = 0; i < 5000; i++) {  
+                binary += Math.round(Math.random());  
+                if (i % 100 === 0) binary += '<br>';  
+            }  
+            
+            binaryEl.innerHTML = binary;  
+        }  
+        
+        generateBinary();  
+    </script>  
+</body>  
+</html>  

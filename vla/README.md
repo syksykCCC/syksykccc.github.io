@@ -24,7 +24,11 @@
 
 **Learning 3D Representations from 2D Pre-trained Models via Image-to-Point Masked Autoencoders**
 [[arxiv](https://arxiv.org/abs/2212.06785)]
-[[note](I2PMA.html)]
+[[note](I2PMAE.html)]
+
+**Point Cloud Matters: Rethinking the Impact of Different Observation Spaces on Robot Learning**
+[[arxiv](https://arxiv.org/abs/2402.02500)]
+[[note](OBSBench.html)]
 
 -------
 

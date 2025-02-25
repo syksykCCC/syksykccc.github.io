@@ -6,104 +6,208 @@
     <title>信息论课程笔记</title>  
     <script src="https://cdn.tailwindcss.com"></script>  
     <style>  
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap');  
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Cambria:ital,wght@0,400;0,700;1,400&display=swap');  
         
         :root {  
-            --primary: #2563eb;  
-            --secondary: #9333ea;  
-            --background: #f8fafc;  
-            --text: #1e293b;  
+            --primary: #0891b2; /* 青色 */  
+            --secondary: #0284c7; /* 蓝色 */  
+            --tertiary: #6366f1; /* 紫色 */  
+            --bg-start: #f0f9ff; /* 浅蓝背景 */  
+            --bg-end: #e0f2fe;  
+            --card: #ffffff;  
+            --text: #0f172a;  
         }  
         
         body {  
-            font-family: 'Noto Sans SC', 'JetBrains Mono', monospace, sans-serif;  
-            background-color: var(--background);  
+            font-family: 'Noto Sans SC', sans-serif;  
+            background: linear-gradient(to bottom right, var(--bg-start), var(--bg-end));  
             color: var(--text);  
-            position: relative;  
-            overflow-x: hidden;  
-        }  
-        
-        .binary-background {  
-            position: absolute;  
-            top: 0;  
-            left: 0;  
-            right: 0;  
-            bottom: 0;  
-            opacity: 0.05;  
-            z-index: -1;  
-            overflow: hidden;  
-            user-select: none;  
-            pointer-events: none;  
+            min-height: 100vh;  
         }  
         
         .formula {  
+            font-family: 'Times New Roman', 'Cambria', serif;  
+        }  
+        
+        .formula .var {  
+            font-style: italic;  
+        }  
+        
+        .lecture-card {  
+            position: relative;  
+            transition: all 0.3s ease;  
+            overflow: hidden;  
+            border-radius: 0.5rem;  
+            border: 1px solid rgba(0, 0, 0, 0.05);  
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);  
+            background-color: var(--card);  
+        }  
+        
+        .lecture-card:hover {  
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);  
+            transform: translateY(-2px);  
+        }  
+        
+        .lecture-card::before {  
+            content: '';  
+            position: absolute;  
+            left: 0;  
+            top: 0;  
+            width: 4px;  
+            height: 100%;  
+            background: linear-gradient(to bottom, var(--primary), var(--tertiary));  
+        }  
+        
+        #binary-bg {  
+            position: fixed;  
+            top: 0;  
+            left: 0;  
+            width: 100%;  
+            height: 100%;  
+            z-index: -1;  
+            opacity: 0.15;  
+            pointer-events: none;  
+            overflow: hidden;  
             font-family: 'JetBrains Mono', monospace;  
         }  
         
-        .link-hover:hover {  
-            background: linear-gradient(90deg, var(--primary), var(--secondary));  
-            background-clip: text;  
-            -webkit-background-clip: text;  
-            color: transparent;  
-            text-decoration: none;  
+        .binary-column {  
+            position: absolute;  
+            top: -20px;  
+            font-size: 18px;  
+            color: var(--primary);  
+            animation-name: binary-fall;  
+            animation-timing-function: linear;  
+            animation-iteration-count: infinite;  
+            white-space: nowrap;  
+        }  
+        
+        @keyframes binary-fall {  
+            0% {  
+                transform: translateY(-100px);  
+                opacity: 0;  
+            }  
+            10% {  
+                opacity: 0.8;  
+            }  
+            90% {  
+                opacity: 0.8;  
+            }  
+            100% {  
+                transform: translateY(calc(100vh + 100px));  
+                opacity: 0;  
+            }  
         }  
     </style>  
 </head>  
-<body class="min-h-screen py-10 px-4 sm:px-6">  
-    <!-- 二进制背景 -->  
-    <div class="binary-background" id="binary"></div>  
+<body class="py-8 px-4 sm:px-6 lg:px-8">  
+    <!-- 信息论背景效果 - 随机01字符 -->  
+    <div id="binary-bg"></div>  
     
     <div class="max-w-3xl mx-auto">  
         <!-- 页眉 -->  
-        <header class="mb-10 pb-4 border-b border-slate-200">  
-            <div class="flex items-center justify-between">  
-                <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">  
-                    信息论 旁听笔记  
-                </h1>  
+        <header class="mb-12 pb-4 border-b border-slate-200">  
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">  
+                <div>  
+                    <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600">  
+                        信息论课程笔记  
+                    </h1>  
+                    <p class="text-slate-500 mt-1">Information Theory · 2025 Spring</p>  
+                </div>  
+                <div class="formula text-slate-700 text-base sm:text-right">  
+                    <span class="var">H</span>[<span class="var">X</span>] = -∑<sub><span class="var">i</span></sub> <span class="var">p</span>(<span class="var">x</span><sub>i</sub>) log <span class="var">p</span>(<span class="var">x</span><sub>i</sub>)  
+                </div>  
             </div>  
         </header>  
         
-        <!-- 主要内容 -->  
+        <!-- 主体内容：只包含Lecture入口 -->  
         <main>  
-            <div class="mb-8">  
-                <h2 class="text-xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">  
-                    2025 Spring 信息论 笔记  
-                </h2>  
-                
-                <div class="space-y-4 mt-6">  
-                    <div class="p-4 bg-white rounded-lg shadow-sm border border-slate-100 hover:shadow-md transition-shadow">  
-                        <div class="flex items-baseline">  
-                            <span class="text-slate-500 mr-3 font-mono">2025/2/25</span>  
-                            <a href="Lec2.html" class="text-blue-600 hover:text-purple-600 transition-colors link-hover font-semibold">  
-                                Lecture 2  
-                            </a>  
-                        </div>  
-                    </div>  
+            <!-- Lecture 2 -->  
+            <div class="lecture-card py-3 px-6 mb-4">  
+                <div class="flex justify-between items-center">  
+                    <h2 class="text-lg font-bold text-cyan-700">  
+                        <a href="Lec2.html" class="hover:text-blue-700 transition-colors">Lecture 2</a>  
+                    </h2>  
+                    <span class="text-slate-500 font-mono text-sm">2025 / 2 / 25</span>  
                 </div>  
             </div>  
+      
         </main>  
         
         <!-- 页脚 -->  
-        <footer class="mt-12 pt-4 border-t border-slate-200 text-center text-sm text-slate-500">  
-            <p>© syksykCCC</p>  
+        <footer class="mt-16 pt-4 border-t border-slate-200 text-center text-sm text-slate-500">  
+            <p>© 2025 syksykCCC</p>  
         </footer>  
     </div>  
     
     <script>  
-        // 生成二进制背景  
-        function generateBinary() {  
-            const binaryEl = document.getElementById('binary');  
-            let binary = '';  
+        // 生成信息论背景效果 - 随机01字符串  
+        function initBinaryBackground() {  
+            const bg = document.getElementById('binary-bg');  
+            const width = window.innerWidth;  
             
-            for (let i = 0; i < 5000; i++) {  
-                binary += Math.round(Math.random());  
-                if (i % 100 === 0) binary += '<br>';  
+            // 创建多列随机01字符  
+            const columnCount = Math.floor(width / 40); // 每列的宽度  
+            
+            for (let i = 0; i < columnCount; i++) {  
+                createBinaryColumn(i, columnCount);  
             }  
             
-            binaryEl.innerHTML = binary;  
+            function createBinaryColumn(index, total) {  
+                const column = document.createElement('div');  
+                column.classList.add('binary-column');  
+                
+                // 随机位置  
+                column.style.left = `${(index / total) * 100}%`;  
+                
+                // 随机速度和延迟  
+                const duration = 15 + Math.random() * 30;  
+                const delay = Math.random() * 15;  
+                
+                column.style.animationDuration = `${duration}s`;  
+                column.style.animationDelay = `${delay}s`;  
+                
+                // 生成随机01字符串  
+                let binaryString = '';  
+                const length = 20 + Math.floor(Math.random() * 30);  
+                
+                for (let j = 0; j < length; j++) {  
+                    if (Math.random() < 0.8) {  
+                        // 80%的概率是0或1  
+                        binaryString += Math.round(Math.random());  
+                    } else {  
+                        // 20%的概率是空格  
+                        binaryString += '&nbsp;';  
+                    }  
+                    
+                    // 换行  
+                    if (j < length - 1) {  
+                        binaryString += '<br>';  
+                    }  
+                }  
+                
+                column.innerHTML = binaryString;  
+                bg.appendChild(column);  
+                
+                // 生命周期结束后重新创建  
+                setTimeout(() => {  
+                    column.remove();  
+                    createBinaryColumn(index, total);  
+                }, (duration + delay) * 1000);  
+            }  
         }  
         
-        generateBinary();  
+        // 当窗口大小改变时，重新计算背景  
+        window.addEventListener('resize', () => {  
+            const bg = document.getElementById('binary-bg');  
+            bg.innerHTML = '';  
+            initBinaryBackground();  
+        });  
+        
+        // 初始化  
+        window.addEventListener('DOMContentLoaded', () => {  
+            initBinaryBackground();  
+        });  
     </script>  
 </body>  
-</html>  
+</html>

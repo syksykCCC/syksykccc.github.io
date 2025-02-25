@@ -2,10 +2,6 @@
 
 -----
 
-**Act3D: 3D Feature Field Transformers for Multi-Task Robotic Manipulation**
-[[arxiv](https://arxiv.org/abs/2306.17817)]
-[[note](Act3D.html)]
-
 **3D-MVP: 3D Multiview Pretraining for Robotic Manipulation**
 [[arxiv](https://arxiv.org/abs/2406.18158)]
 [[note](3DMVP.html)]
@@ -17,6 +13,18 @@
 **3D Diffusion Policy: Generalizable Visuomotor Policy Learning via Simple 3D Representations**
 [[arxiv](https://arxiv.org/abs/2403.03954)]
 [[note](3DDP.html)]
+
+**Any2Point: Empowering Any-modality Large Models for Efficient 3D Understanding**
+[[arxiv](https://arxiv.org/abs/2404.07989)]
+[[note](Any2Point.html)]
+
+**Act3D: 3D Feature Field Transformers for Multi-Task Robotic Manipulation**
+[[arxiv](https://arxiv.org/abs/2306.17817)]
+[[note](Act3D.html)]
+
+**Learning 3D Representations from 2D Pre-trained Models via Image-to-Point Masked Autoencoders**
+[[arxiv](https://arxiv.org/abs/2212.06785)]
+[[note](I2PMA.html)]
 
 -------
 

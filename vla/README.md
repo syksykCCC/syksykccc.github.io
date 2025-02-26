@@ -30,6 +30,10 @@
 [[arxiv](https://arxiv.org/abs/2402.02500)]
 [[note](OBSBench.html)]
 
+**PolarNet: 3D Point Clouds for Language-Guided Robotic Manipulation**
+[[arxiv](https://arxiv.org/abs/2309.15596)]
+[[note](PolarNet.html)]
+
 -------
 
 **3D-VLA: A 3D Vision-Language-Action Generative World Model**

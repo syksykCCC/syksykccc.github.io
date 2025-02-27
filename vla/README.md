@@ -34,6 +34,10 @@
 [[arxiv](https://arxiv.org/abs/2309.15596)]
 [[note](PolarNet.html)]
 
+**ManiCM: Real-time 3D Diffusion Policy via Consistency Model for Robotic Manipulation**
+[[arxiv](https://arxiv.org/abs/2406.01586)]
+[[note](ManiCM.html)]
+
 -------
 
 **3D-VLA: A 3D Vision-Language-Action Generative World Model**

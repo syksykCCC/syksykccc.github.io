@@ -38,6 +38,10 @@
 [[arxiv](https://arxiv.org/abs/2406.01586)]
 [[note](ManiCM.html)]
 
+**SUGAR: Pre-training 3D Visual Representations for Robotics**
+[[arxiv](https://arxiv.org/abs/2404.01491)]
+[[note](SUGAR.html)]
+
 -------
 
 **3D-VLA: A 3D Vision-Language-Action Generative World Model**

@@ -42,6 +42,10 @@
 [[arxiv](https://arxiv.org/abs/2404.01491)]
 [[note](SUGAR.html)]
 
+**SPA: 3D Spatial-Awareness Enables Effective Embodied Representation**
+[[arxiv](https://arxiv.org/abs/2410.08208)]
+[[note](SPA.html)]
+
 -------
 
 **3D-VLA: A 3D Vision-Language-Action Generative World Model**

@@ -1,5 +1,9 @@
 # 随机算法课程笔记
 
+## Lecture 4
+- 日期：2025/2/27
+- 主题：Unbalancing lights, Large girth and chromatic number, MAX3SAT, 4-Cliques
+
 ## Lecture 3
 - 日期：2025/2/24
 - 主题：Primality, Probabilistic method, Independent set, Crossing number

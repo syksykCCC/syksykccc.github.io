@@ -1,5 +1,9 @@
 # 随机算法课程笔记
 
+## Lecture 5
+- 日期：2025/3/3
+- 主题：Monotone circuits for the majority function
+
 ## Lecture 4
 - 日期：2025/2/27
 - 主题：Unbalancing lights, Large girth and chromatic number, MAX3SAT, 4-Cliques

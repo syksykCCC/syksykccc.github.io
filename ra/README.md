@@ -1,5 +1,9 @@
 # 随机算法课程笔记
 
+## Lecture 6
+- 日期：2025/3/6
+- 主题：Probability amplification using pairwise independence, Derandomization using k-wise independence
+
 ## Lecture 5
 - 日期：2025/3/3
 - 主题：Monotone circuits for the majority function

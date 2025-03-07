@@ -2,11 +2,11 @@
 
 ## Lecture 6
 - 日期：2025/3/6
-- 主题：Probability amplification using pairwise independence, Derandomization using k-wise independence
+- 主题：Pairwise independence, Probability amplification, Derandomization, Universal hashing
 
 ## Lecture 5
 - 日期：2025/3/3
-- 主题：Monotone circuits for the majority function
+- 主题：Monotone circuits, Majority function
 
 ## Lecture 4
 - 日期：2025/2/27

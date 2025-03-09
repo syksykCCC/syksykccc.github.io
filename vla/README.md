@@ -46,6 +46,14 @@
 [[arxiv](https://arxiv.org/abs/2410.08208)]
 [[note](SPA.html)]
 
+**RVT: Robotic View Transformer for 3D Object Manipulation**
+[[arxiv](https://arxiv.org/abs/2306.14896)]
+[[note](RVT.html)]
+
+**RVT-2: Learning Precise Manipulation from Few Demonstrations**
+[[arxiv](https://arxiv.org/abs/2406.08545)]
+[[note](RVT2.html)]
+
 -------
 
 **3D-VLA: A 3D Vision-Language-Action Generative World Model**

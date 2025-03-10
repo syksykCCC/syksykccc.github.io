@@ -1,5 +1,9 @@
 # 随机算法课程笔记
 
+## Lecture 7
+- 日期：2025/3/10
+- 主题：Double hashing, Buffon's needle, Median trick
+
 ## Lecture 6
 - 日期：2025/3/6
 - 主题：Pairwise independence, Probability amplification, Derandomization, Universal hashing

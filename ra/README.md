@@ -1,5 +1,9 @@
 # 随机算法课程笔记
 
+## Lecture 8
+- 日期：2025/3/13
+- 主题：DNF Counting, Network Reliability
+
 ## Lecture 7
 - 日期：2025/3/10
 - 主题：Double hashing, Buffon's needle, Median trick

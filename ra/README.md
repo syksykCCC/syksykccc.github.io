@@ -1,8 +1,12 @@
 # 随机算法课程笔记
 
+## Lecture 9
+- 日期：2025/3/17
+- 主题：Network Reliability (2), Chernoff Bounds
+
 ## Lecture 8
 - 日期：2025/3/13
-- 主题：DNF Counting, Network Reliability
+- 主题：DNF Counting, Network Reliability (1)
 
 ## Lecture 7
 - 日期：2025/3/10

@@ -1,5 +1,9 @@
 # 随机算法课程笔记
 
+## Lecture 10
+- 日期：2025/3/20
+- 主题：Randomized Routing, Hamilton Cycles (1)
+
 ## Lecture 9
 - 日期：2025/3/17
 - 主题：Network Reliability (2), Chernoff Bounds

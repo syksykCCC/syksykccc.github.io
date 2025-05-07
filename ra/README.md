@@ -1,5 +1,41 @@
 # 随机算法课程笔记
 
+## Lecture 20
+- 日期：2025/4/28
+- 主题：Percolation
+
+## Lecture 19
+- 日期：2025/4/24
+- 主题：Ballot, Random 2-SAT
+
+## Lecture 18
+- 日期：2025/4/21
+- 主题：Quick Sort, Optional Stopping Theorem
+
+## Lecture 17
+- 日期：2025/4/17
+- 主题：Azuma Inequality
+
+## Lecture 16
+- 日期：2025/4/14
+- 主题：Johnson & Lindenstrauss Lemma, Embedding into <i>l<sub>p</sub></i> metrics
+
+## Lecture 15
+- 日期：2025/4/10
+- 主题：Giant Component (2), Martingale
+
+## Lecture 14
+- 日期：2025/4/7
+- 主题：Giant Component (1)
+
+## Lecture 13
+- 日期：2025/3/31
+- 主题：Power of 2 Choices (2), Branching Process
+
+## Lecture 12
+- 日期：2025/3/27
+- 主题：Balls and Bins (2), Power of 2 Choices (1)
+
 ## Lecture 11
 - 日期：2025/3/24
 - 主题：Hamilton Cycles (2), Balls and Bins (1)

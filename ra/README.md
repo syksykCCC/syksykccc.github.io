@@ -2,7 +2,7 @@
 
 ## Lecture 20
 - 日期：2025/4/28
-- 主题：Percolation
+- 主题：Percolation on <i>d</i>-Regular Graphs
 
 ## Lecture 19
 - 日期：2025/4/24

@@ -6,11 +6,11 @@
 
 ## Lecture 19
 - 日期：2025/4/24
-- 主题：Ballot, Random 2-SAT
+- 主题：Submartingale, Ballot, Random 2-SAT
 
 ## Lecture 18
 - 日期：2025/4/21
-- 主题：Quick Sort, Optional Stopping Theorem
+- 主题：Quick Sort, Optional Stopping Theorem, Gambler's Ruin
 
 ## Lecture 17
 - 日期：2025/4/17

@@ -1,12 +1,16 @@
 # 随机算法课程笔记
 
+## Lecture 21
+- 日期：2025/5/8
+- 主题：Lov́asz Local Lemma
+
 ## Lecture 20
 - 日期：2025/4/28
 - 主题：Percolation on <i>d</i>-Regular Graphs
 
 ## Lecture 19
 - 日期：2025/4/24
-- 主题：Submartingale, Ballot, Random 2-SAT
+- 主题：Ballot, Submartingale, Random 2-SAT
 
 ## Lecture 18
 - 日期：2025/4/21

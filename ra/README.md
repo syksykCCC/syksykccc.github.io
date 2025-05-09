@@ -2,7 +2,7 @@
 
 ## Lecture 21
 - 日期：2025/5/8
-- 主题：Lov́asz Local Lemma
+- 主题：Lovasz Local Lemma
 
 ## Lecture 20
 - 日期：2025/4/28
@@ -18,7 +18,7 @@
 
 ## Lecture 17
 - 日期：2025/4/17
-- 主题：Azuma Inequality
+- 主题：Martingale, Azuma Inequality, Doob Martingale
 
 ## Lecture 16
 - 日期：2025/4/14
@@ -26,7 +26,7 @@
 
 ## Lecture 15
 - 日期：2025/4/10
-- 主题：Giant Component (2), Martingale
+- 主题：Giant Component (2)
 
 ## Lecture 14
 - 日期：2025/4/7

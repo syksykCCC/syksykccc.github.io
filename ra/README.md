@@ -34,7 +34,7 @@
 
 ## Lecture 13
 - 日期：2025/3/31
-- 主题：Power of 2 Choices (2), Branching Process
+- 主题：Power of 2 Choices (2), Galton-Watson Branching Process
 
 ## Lecture 12
 - 日期：2025/3/27

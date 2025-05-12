@@ -2,7 +2,7 @@
 
 ## Lecture 21
 - 日期：2025/5/8
-- 主题：Lovasz Local Lemma
+- 主题：Lovász Local Lemma
 
 ## Lecture 20
 - 日期：2025/4/28

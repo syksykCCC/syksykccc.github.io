@@ -1,5 +1,9 @@
 # 随机算法课程笔记
 
+## Lecture 22
+- 日期：2025/5/12
+- 主题：Packet Routing, Asymmetric LLL, Frugal Graph Coloring
+
 ## Lecture 21
 - 日期：2025/5/8
 - 主题：Lovász Local Lemma

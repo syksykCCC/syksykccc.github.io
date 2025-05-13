@@ -1,4 +1,4 @@
-一些关于 3D Robotic 和 Vision-Language-Action (VLA) 大模型的论文选读
+一些关于 3D Robotic、Vision-Language-Action (VLA) 和 Reinforcement Learning 的大模型的论文选读
 
 -----
 
@@ -99,3 +99,13 @@
 **Robo-ABC: Affordance Generalization Beyond Categories via Semantic Correspondence for Robot Manipulation**
 [[arxiv](https://arxiv.org/abs/2401.07487)]
 [[note](RoboABC.html)]
+
+-----
+
+**iRE-VLA: Improving Vision-Language-Action Model with Online Reinforcement Learning**
+[[arxiv](https://arxiv.org/abs/2501.16664)]
+[[note](iREVLA.html)]
+
+**HIL-SERL: Precise and Dexterous Robotic Manipulation via Human-in-the-Loop Reinforcement Learning**
+[[arxiv](https://arxiv.org/abs/2410.21845)]
+[[note](HILSERL.html)]

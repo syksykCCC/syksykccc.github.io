@@ -1,5 +1,17 @@
 # 随机算法课程笔记
 
+## Lecture 25
+- 日期：2025/5/22
+- 主题：Graph Colorings, Algorithmic LLL
+
+## Lecture 24
+- 日期：2025/5/19
+- 主题：Mixing Time, Coupling
+
+## Lecture 23
+- 日期：2025/5/15
+- 主题：Markov Chains, Stationary Distribution, Metropolis Process
+
 ## Lecture 22
 - 日期：2025/5/12
 - 主题：Packet Routing, Asymmetric LLL, Frugal Graph Coloring

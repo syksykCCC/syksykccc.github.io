@@ -19,9 +19,7 @@ $$ \frac{(c-1)k}{2} + k = \frac{(c+1)k}{2} $$
 
 进而从 $v$ 开始的 branching process 在 $k$ 步内展开的点数，不低于 $k$ 次采样 $\mathcal B\left(n - \dfrac{(c+1)k^+}{2}, \dfrac{c}{n}\right)$ 展开的点数。
 
-该过程如果提前停止，
-
-<p style="color: red;">TBD</p>
+<p style="color: red;">「上面这一步并没有理解，如果 branching process 提前终止了，为什么还能 dominate 固定次数采样的求和？」</p>
 
 从而 a.a.s 从任何一个点 $v$ 开始的 branching process 要么在 $k^- = O(\log n)$ 轮终止，要么持续至少 $k^+ = n^{2/3}$ 轮。记前面的一类点是 _small_ 的，后面的一类是 _large_ 的。
 

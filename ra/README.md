@@ -1,5 +1,9 @@
 # 随机算法课程笔记
 
+## Lecture 2025
+- 日期：2025/6/9
+- 主题：Merged PDF File
+
 ## Lecture 25
 - 日期：2025/5/22
 - 主题：Graph Colorings, Algorithmic LLL

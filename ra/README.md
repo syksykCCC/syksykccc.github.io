@@ -58,7 +58,7 @@
 
 ## Lecture 11
 - 日期：2025/3/24
-- 主题：Hamilton Cycles (2), Balls and Bins (1)
+- 主题：Hamilton Cycles (2), Stochastic Dominance, Balls and Bins (1)
 
 ## Lecture 10
 - 日期：2025/3/20

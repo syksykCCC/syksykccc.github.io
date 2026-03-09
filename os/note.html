@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>课程笔记 | 操作系统（实验班）2026 Spring</title>
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./style.css?v=20260309c" />
   <script>
     window.MathJax = {
       tex: {
@@ -26,7 +26,7 @@
   <main class="shell">
     <section class="panel">
       <div class="topbar">
-        <div class="crumb"><a href="./index.html">返回首页</a> / <span id="fileName" class="file-name">Lec1</span></div>
+        <div class="crumb"><a href="./index.html">返回首页</a> / <span id="fileName" class="file-name">Lec0</span></div>
         <div id="langSwitch" class="lang-switch" hidden>
           <a id="switchZh" class="lang-btn" href="#">中文</a>
           <a id="switchEn" class="lang-btn" href="#">English</a>
@@ -38,7 +38,7 @@
     </section>
   </main>
 
-  <script src="./render.js"></script>
+  <script src="./render.js?v=20260309c"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const noteParam = (params.get("note") || "").trim();
@@ -144,9 +144,9 @@
 
       return {
         mode: "note",
-        noteId: "Lec1",
+        noteId: "Lec0",
         lang,
-        file: `Lec1.${lang}.md`
+        file: `Lec0.${lang}.md`
       };
     }
 
@@ -239,3 +239,6 @@
   </script>
 </body>
 </html>
+
+
+

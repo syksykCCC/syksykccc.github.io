@@ -13,6 +13,7 @@
     out = out.replace(/`([^`]+)`/g, "<code>$1</code>");
     out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
     out = out.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    out = out.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img class="note-image" src="$2" alt="$1" loading="lazy">');
     out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>');
     return out;
   }
@@ -22,6 +23,44 @@
       const tag = state.listStack.pop();
       html.push(`</${tag}>`);
     }
+  }
+
+  function resolveFoldType(rawType) {
+    const normalized = (rawType || "").trim().toLowerCase();
+
+    if (["remark", "note", "备注"].includes(normalized)) {
+      return "remark";
+    }
+
+    if (["tip", "hint", "提示"].includes(normalized)) {
+      return "tip";
+    }
+
+    if (["warn", "warning", "注意"].includes(normalized)) {
+      return "warn";
+    }
+
+    if (["error", "danger", "错误"].includes(normalized)) {
+      return "error";
+    }
+
+    return "";
+  }
+
+  function defaultFoldTitle(type) {
+    if (type === "tip") {
+      return "💡 提示";
+    }
+
+    if (type === "warn") {
+      return "⚠️ 注意";
+    }
+
+    if (type === "error") {
+      return "⛔ 错误";
+    }
+
+    return "📝 备注";
   }
 
   function parseMarkdown(markdown) {
@@ -71,6 +110,46 @@
         closeLists(state, html);
         state.inCode = true;
         state.codeLang = codeStart[1] || "";
+        continue;
+      }
+
+      const foldStart = line.match(/^\s*:::\s*([a-zA-Z\u4e00-\u9fa5]+)\s*(.*)$/);
+      if (foldStart) {
+        const foldType = resolveFoldType(foldStart[1]);
+
+        if (!foldType) {
+          closeLists(state, html);
+          html.push(`<p>${formatInline(line.trim())}</p>`);
+          continue;
+        }
+
+        flushQuote();
+        closeLists(state, html);
+
+        const summary = foldStart[2].trim() || defaultFoldTitle(foldType);
+        const bodyLines = [];
+        let foundEnd = false;
+
+        for (let j = i + 1; j < lines.length; j += 1) {
+          const inner = lines[j];
+          if (/^\s*:::\s*$/.test(inner)) {
+            i = j;
+            foundEnd = true;
+            break;
+          }
+          bodyLines.push(inner);
+        }
+
+        if (!foundEnd) {
+          html.push(`<p>${formatInline(line.trim())}</p>`);
+          if (bodyLines.length) {
+            html.push(parseMarkdown(bodyLines.join("\n")));
+          }
+          break;
+        }
+
+        const bodyHtml = bodyLines.length ? parseMarkdown(bodyLines.join("\n").trim()) : "";
+        html.push(`<details class="note-fold note-fold--${foldType}"><summary>${formatInline(summary)}</summary><div class="note-fold-body">${bodyHtml}</div></details>`);
         continue;
       }
 

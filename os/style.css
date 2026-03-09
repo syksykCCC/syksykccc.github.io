@@ -297,8 +297,109 @@ a:hover {
   overflow-x: auto;
   overflow-y: hidden;
 }
+.note-fold {
+  --fold-border: rgba(132, 255, 191, 0.34);
+  --fold-bg: rgba(13, 33, 47, 0.64);
+  --fold-title: #bcf6de;
+  --fold-icon: #8df2ca;
+  --fold-divider: rgba(132, 255, 191, 0.22);
+  margin: 1rem 0;
+  border: 1px solid var(--fold-border);
+  border-radius: 10px;
+  background: var(--fold-bg);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.note-fold summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.56rem 0.92rem;
+  color: var(--fold-title);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.note-fold summary:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.note-fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.note-fold summary::before {
+  content: "+";
+  width: 1rem;
+  font-family: Consolas, "Courier New", monospace;
+  color: var(--fold-icon);
+}
+
+.note-fold[open] summary::before {
+  content: "-";
+}
+
+.note-fold-body {
+  border-top: 1px solid var(--fold-divider);
+  padding: 0.12rem 0.92rem 0.78rem;
+}
+
+.note-fold-body > :first-child {
+  margin-top: 0.62rem;
+}
+
+.note-fold-body > :last-child {
+  margin-bottom: 0;
+}
+
+.note-fold--remark {
+  --fold-border: rgba(132, 255, 191, 0.34);
+  --fold-bg: rgba(13, 33, 47, 0.64);
+  --fold-title: #bcf6de;
+  --fold-icon: #8df2ca;
+  --fold-divider: rgba(132, 255, 191, 0.22);
+}
+
+.note-fold--tip {
+  --fold-border: rgba(99, 215, 255, 0.34);
+  --fold-bg: rgba(11, 33, 50, 0.66);
+  --fold-title: #c5efff;
+  --fold-icon: #8fddff;
+  --fold-divider: rgba(99, 215, 255, 0.24);
+}
+
+.note-fold--warn {
+  --fold-border: rgba(255, 207, 107, 0.36);
+  --fold-bg: rgba(44, 31, 12, 0.62);
+  --fold-title: #ffe8b7;
+  --fold-icon: #ffd36d;
+  --fold-divider: rgba(255, 207, 107, 0.26);
+}
+
+.note-fold--error {
+  --fold-border: rgba(255, 118, 118, 0.38);
+  --fold-bg: rgba(55, 18, 25, 0.62);
+  --fold-title: #ffd1d1;
+  --fold-icon: #ff9e9e;
+  --fold-divider: rgba(255, 118, 118, 0.25);
+}
 .note-content {
   line-height: 1.7;
+}
+
+.note-content .note-image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0.9rem 0;
+  border-radius: 10px;
+  border: 1px solid rgba(77, 216, 255, 0.28);
+  background: rgba(7, 22, 34, 0.5);
 }
 
 .note-content h1,
@@ -395,4 +496,6 @@ a:hover {
     justify-self: start;
   }
 }
+
+
 

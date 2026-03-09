@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -15,16 +15,15 @@
     <header class="hero">
       <p class="hero-tag">Course Notes</p>
       <h1 class="hero-title">
-        <span class="hero-title-main">操作系统（实验班）</span>
-        <span class="hero-title-sub">2026 Spring</span>
+        <span class="hero-title-main">操作系统 实验班</span>
+        <span class="hero-title-sub">Spring 2026</span>
       </h1>
-      <p class="hero-desc">进程、线程、并发、内存、文件系统与 I/O 的课堂笔记与实验记录。</p>
+      <p class="hero-desc">本笔记网站及其中全部内容均由 GPT-5.3-Codex 自动生成</p>
     </header>
 
     <section class="panel">
       <div class="panel-head">
         <h2>笔记列表</h2>
-        <a class="link-btn" href="./note.html?file=addnote.md">如何添加新笔记</a>
       </div>
       <ul id="noteList" class="note-list"></ul>
     </section>
@@ -34,10 +33,17 @@
     const NOTES = [
       {
         id: "Lec1",
-        titleZh: "Lec1 - 课程导论与操作系统总览",
-        titleEn: "Lec1 - Course Intro & OS Overview",
-        summaryZh: "课程目标、OS 的核心职责与系统调用基础。",
-        updated: "2026-03-09"
+        titleZh: "Lec1 - 什么是操作系统？",
+        titleEn: "Lec1 - What Is an Operating System?",
+        summaryZh: "操作系统的定义、进程抽象，以及现代系统挑战。",
+        updated: "2026-03-03"
+      },
+      {
+        id: "Lec2",
+        titleZh: "Lec2 - 四个基础操作系统概念",
+        titleEn: "Lec2 - Four Fundamental OS Concepts",
+        summaryZh: "线程、地址空间、进程、双模式与基础保护机制。",
+        updated: "2026-03-05"
       }
     ];
 

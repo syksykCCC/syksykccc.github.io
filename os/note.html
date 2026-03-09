@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>课程笔记 | 操作系统（实验班）2026 Spring</title>
-  <link rel="stylesheet" href="./style.css?v=20260309c" />
+  <link rel="stylesheet" href="./style.css?v=20260310b" />
   <script>
     window.MathJax = {
       tex: {
@@ -19,6 +19,9 @@
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
+  <div id="bgOsElements" class="bg-os-elements" aria-hidden="true">
+    <div id="bgTerminalLayer" class="bg-terminal-layer"></div>
+  </div>
   <div class="bg-grid"></div>
   <div class="bg-glow bg-glow-a"></div>
   <div class="bg-glow bg-glow-b"></div>
@@ -26,7 +29,7 @@
   <main class="shell">
     <section class="panel">
       <div class="topbar">
-        <div class="crumb"><a href="./index.html">返回首页</a> / <span id="fileName" class="file-name">Lec0</span></div>
+        <div class="crumb"><a href="./index.html">返回首页</a> / <span id="fileName" class="file-name">Lec1</span></div>
         <div id="langSwitch" class="lang-switch" hidden>
           <a id="switchZh" class="lang-btn" href="#">中文</a>
           <a id="switchEn" class="lang-btn" href="#">English</a>
@@ -38,6 +41,7 @@
     </section>
   </main>
 
+  <script src="./background-elements.js?v=20260310b"></script>
   <script src="./render.js?v=20260309c"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -144,9 +148,9 @@
 
       return {
         mode: "note",
-        noteId: "Lec0",
+        noteId: "Lec1",
         lang,
-        file: `Lec0.${lang}.md`
+        file: `Lec1.${lang}.md`
       };
     }
 
@@ -239,6 +243,9 @@
   </script>
 </body>
 </html>
+
+
+
 
 
 

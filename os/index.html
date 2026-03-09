@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>操作系统（实验班）2026 Spring | Notes</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-a"></div>
+  <div class="bg-glow bg-glow-b"></div>
+
+  <main class="shell">
+    <header class="hero">
+      <p class="hero-tag">Course Notes</p>
+      <h1 class="hero-title">
+        <span class="hero-title-main">操作系统（实验班）</span>
+        <span class="hero-title-sub">2026 Spring</span>
+      </h1>
+      <p class="hero-desc">进程、线程、并发、内存、文件系统与 I/O 的课堂笔记与实验记录。</p>
+    </header>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>笔记列表</h2>
+        <a class="link-btn" href="./note.html?file=addnote.md">如何添加新笔记</a>
+      </div>
+      <ul id="noteList" class="note-list"></ul>
+    </section>
+  </main>
+
+  <script>
+    const NOTES = [
+      {
+        id: "Lec1",
+        titleZh: "Lec1 - 课程导论与操作系统总览",
+        titleEn: "Lec1 - Course Intro & OS Overview",
+        summaryZh: "课程目标、OS 的核心职责与系统调用基础。",
+        updated: "2026-03-09"
+      }
+    ];
+
+    const list = document.getElementById("noteList");
+    NOTES.forEach((note, index) => {
+      const item = document.createElement("li");
+      item.className = "note-card";
+      item.innerHTML = `
+        <a class="note-main" href="./note.html?note=${encodeURIComponent(note.id)}&lang=zh">
+          <div class="note-index">#${String(index + 1).padStart(2, "0")}</div>
+          <div>
+            <h3>${note.titleZh}</h3>
+            <p>${note.summaryZh}</p>
+            <p class="note-en">${note.titleEn}</p>
+          </div>
+          <div class="note-side">
+            <div class="note-date">${note.updated}</div>
+            <div class="note-lang-hint">ZH / EN</div>
+          </div>
+        </a>
+      `;
+      list.appendChild(item);
+    });
+  </script>
+</body>
+</html>

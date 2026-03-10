@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>课程笔记 | 图形学与物理仿真 2026 Spring</title>
+  <link rel="stylesheet" href="./style.css?v=20260310c" />
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]],
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]]
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <canvas id="bgSimCanvas" class="bg-sim-canvas" aria-hidden="true"></canvas>
+
+  <main class="layout layout--note">
+    <aside class="identity panel note-brand">
+      <p class="hero-tag">AI Course Notes</p>
+      <h1 class="hero-title">
+        <span class="hero-title-main">图形学与物理仿真</span>
+        <span class="hero-title-sub">2026 Spring</span>
+      </h1>
+      <p class="hero-desc">本网站及全部内容均由 GPT-5.3-Codex 自动生成。</p>
+    </aside>
+
+    <section class="notes panel panel--note">
+      <div class="topbar">
+        <div class="crumb"><a href="./index.html">返回首页</a> / <span id="fileName" class="file-name">Lec1</span></div>
+        <div id="langSwitch" class="lang-switch" hidden>
+          <a id="switchZh" class="lang-btn" href="#">中文</a>
+          <a id="switchEn" class="lang-btn" href="#">English</a>
+        </div>
+      </div>
+
+      <h1 id="noteDisplayTitle" class="note-display-title" hidden></h1>
+      <article id="noteContainer" class="note-content"></article>
+    </section>
+  </main>
+
+  <script src="./background-elements.js?v=20260310c"></script>
+  <script src="./render.js?v=20260310a"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const noteParam = (params.get("note") || "").trim();
+    const fileParam = (params.get("file") || "").trim();
+    const langParam = (params.get("lang") || "zh").trim().toLowerCase();
+
+    const fileNameNode = document.getElementById("fileName");
+    const container = document.getElementById("noteContainer");
+    const langSwitchNode = document.getElementById("langSwitch");
+    const switchZhNode = document.getElementById("switchZh");
+    const switchEnNode = document.getElementById("switchEn");
+    const noteDisplayTitleNode = document.getElementById("noteDisplayTitle");
+
+    function normalizeLang(lang) {
+      return lang === "en" ? "en" : "zh";
+    }
+
+    function isSafeMarkdownFile(name) {
+      return /^[a-zA-Z0-9._-]+\.md$/i.test(name);
+    }
+
+    function isSafeNoteId(id) {
+      return /^[a-zA-Z0-9_-]+$/.test(id);
+    }
+
+    function splitTitleAndBody(markdown) {
+      const normalized = markdown.replace(/\r\n/g, "\n");
+      const lines = normalized.split("\n");
+      const firstNonEmpty = lines.findIndex((line) => line.trim().length > 0);
+
+      if (firstNonEmpty === -1) {
+        return { title: "", body: "" };
+      }
+
+      const headingMatch = lines[firstNonEmpty].match(/^#\s+(.+)$/);
+      if (!headingMatch) {
+        return { title: "", body: normalized };
+      }
+
+      const title = headingMatch[1].trim();
+      lines.splice(firstNonEmpty, 1);
+      if (lines[firstNonEmpty] && lines[firstNonEmpty].trim() === "") {
+        lines.splice(firstNonEmpty, 1);
+      }
+
+      return { title, body: lines.join("\n") };
+    }
+
+    function setStandaloneTitle(title) {
+      if (!title) {
+        noteDisplayTitleNode.textContent = "";
+        noteDisplayTitleNode.hidden = true;
+        return;
+      }
+
+      noteDisplayTitleNode.textContent = title;
+      noteDisplayTitleNode.hidden = false;
+    }
+
+    function queueMathTypeset(retryCount = 0) {
+      if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
+        window.MathJax.typesetPromise([noteDisplayTitleNode, container]).catch((error) => {
+          console.error("MathJax typeset failed:", error);
+        });
+        return;
+      }
+
+      if (retryCount < 40) {
+        window.setTimeout(() => queueMathTypeset(retryCount + 1), 100);
+      }
+    }
+
+    function resolveTarget() {
+      const lang = normalizeLang(langParam);
+
+      if (noteParam) {
+        if (!isSafeNoteId(noteParam)) {
+          return { error: "笔记编号不合法。请使用类似 Lec2 的编号。" };
+        }
+
+        return { mode: "note", noteId: noteParam, lang, file: `${noteParam}.${lang}.md` };
+      }
+
+      if (fileParam) {
+        if (!isSafeMarkdownFile(fileParam)) {
+          return { error: "文件名不合法。请使用类似 Lec2.zh.md 或 addnote.md 的文件名。" };
+        }
+
+        return { mode: "file", file: fileParam };
+      }
+
+      return { mode: "note", noteId: "Lec1", lang, file: `Lec1.${lang}.md` };
+    }
+
+    function setupLangSwitcher(target) {
+      if (target.mode !== "note") {
+        langSwitchNode.hidden = true;
+        return;
+      }
+
+      const zhQuery = new URLSearchParams({ note: target.noteId, lang: "zh" });
+      const enQuery = new URLSearchParams({ note: target.noteId, lang: "en" });
+
+      switchZhNode.href = `./note.html?${zhQuery.toString()}`;
+      switchEnNode.href = `./note.html?${enQuery.toString()}`;
+      switchZhNode.classList.toggle("active", target.lang === "zh");
+      switchEnNode.classList.toggle("active", target.lang === "en");
+      langSwitchNode.hidden = false;
+    }
+
+    async function fetchMarkdownText(fileName) {
+      const currentUrl = new URL(window.location.href);
+      const pageDir = currentUrl.pathname.slice(0, currentUrl.pathname.lastIndexOf("/") + 1);
+      const candidates = [
+        new URL(fileName, currentUrl).toString(),
+        `${currentUrl.origin}${pageDir}${fileName}`
+      ];
+
+      let lastError = null;
+      for (const url of [...new Set(candidates)]) {
+        try {
+          const response = await fetch(url, { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          return await response.text();
+        } catch (error) {
+          lastError = error;
+        }
+      }
+
+      throw lastError || new Error("unknown fetch error");
+    }
+
+    async function load() {
+      const target = resolveTarget();
+      if (target.error) {
+        setStandaloneTitle("");
+        container.innerHTML = `<p class="error">${target.error}</p>`;
+        return;
+      }
+
+      setupLangSwitcher(target);
+      fileNameNode.textContent = target.mode === "note"
+        ? `${target.noteId} (${target.lang === "zh" ? "中文" : "English"})`
+        : target.file;
+
+      try {
+        const markdown = await fetchMarkdownText(target.file);
+        const parsed = splitTitleAndBody(markdown);
+
+        setStandaloneTitle(parsed.title);
+        container.innerHTML = window.OSNoteRenderer.parseMarkdown(parsed.body);
+        queueMathTypeset();
+      } catch (error) {
+        setStandaloneTitle("");
+
+        if (window.location.protocol === "file:") {
+          container.innerHTML = `
+            <p class="error">
+              加载失败：${error.message}<br>
+              当前是 <code>file://</code> 方式打开页面，浏览器会拦截 <code>fetch</code> 读取本地文件。<br>
+              请改为 HTTP 方式访问，例如在仓库根目录运行 <code>python -m http.server 8000</code>，然后打开
+              <code>http://localhost:8000/graph/index.html</code>。
+            </p>
+          `;
+          return;
+        }
+
+        container.innerHTML = `<p class="error">加载失败：${error.message}<br>请确认 <code>${target.file}</code> 已放在 graph 目录下。</p>`;
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

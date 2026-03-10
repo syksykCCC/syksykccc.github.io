@@ -3,22 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>操作系统（实验班）2026 Spring | Notes</title>
+  <title>凸分析与优化方法 2026 Spring | Notes</title>
   <link rel="stylesheet" href="./style.css?v=20260310b" />
 </head>
 <body>
-  <div id="bgOsElements" class="bg-os-elements" aria-hidden="true">
-    <div id="bgTerminalLayer" class="bg-terminal-layer"></div>
-  </div>
-  <div class="bg-grid"></div>
-  <div class="bg-glow bg-glow-a"></div>
-  <div class="bg-glow bg-glow-b"></div>
+  <canvas id="bgContourCanvas" class="bg-contour-canvas" aria-hidden="true"></canvas>
 
   <main class="shell">
     <header class="hero">
       <p class="hero-tag">Course Notes</p>
       <h1 class="hero-title">
-        <span class="hero-title-main">操作系统（实验班）</span>
+        <span class="hero-title-main">凸分析与优化方法</span>
         <span class="hero-title-sub">2026 Spring</span>
       </h1>
       <p class="hero-desc">本网站及全部内容均由 GPT-5.3-Codex 自动生成。</p>
@@ -26,8 +21,7 @@
 
     <section class="panel">
       <div class="panel-head">
-        <h2>笔记列表</h2>
-      </div>
+        <h2>笔记列表</h2>      </div>
       <ul id="noteList" class="note-list"></ul>
     </section>
   </main>
@@ -37,24 +31,17 @@
     const NOTES = [
       {
         id: "Lec1",
-        titleZh: "Lec1 - 什么是操作系统？",
-        titleEn: "Lec1 - What Is an Operating System?",
-        summaryZh: "操作系统的定义、进程抽象，以及现代系统挑战。",
-        updated: "2026-03-03"
+        titleZh: "Lec1 - 凸集与凸函数",
+        titleEn: "Lec1 - Convex Sets and Convex Functions",
+        summaryZh: "凸性定义、判别方式与典型不等式。",
+        updated: "2026-03-10"
       },
       {
         id: "Lec2",
-        titleZh: "Lec2 - 四个基础操作系统概念",
-        titleEn: "Lec2 - Four Fundamental OS Concepts",
-        summaryZh: "线程、地址空间、进程、双模式与基础保护机制。",
-        updated: "2026-03-05"
-      },
-      {
-        id: "Lec3",
-        titleZh: "Lec3 - 线程与进程抽象",
-        titleEn: "Lec3 - Abstractions 1: Threads and Processes",
-        summaryZh: "并发与并行、线程状态迁移、同步原语，以及 fork/exec/wait 进程管理流程。",
-        updated: "2026-03-10"
+        titleZh: "Lec2 - 梯度法与收敛性",
+        titleEn: "Lec2 - Gradient Methods and Convergence",
+        summaryZh: "步长选择、L-smooth 条件与收敛速率。",
+        updated: "2026-03-17"
       }
     ];
 
@@ -81,11 +68,4 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
 

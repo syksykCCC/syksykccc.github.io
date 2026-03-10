@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>图形学与物理仿真 2026 Spring | Notes</title>
+  <link rel="stylesheet" href="./style.css?v=20260310c" />
+</head>
+<body>
+  <canvas id="bgSimCanvas" class="bg-sim-canvas" aria-hidden="true"></canvas>
+
+  <main class="layout">
+    <aside class="identity panel">
+      <p class="hero-tag">AI Course Notes</p>
+      <h1 class="hero-title">
+        <span class="hero-title-main">图形学与物理仿真</span>
+        <span class="hero-title-sub">2026 Spring</span>
+      </h1>
+      <p class="hero-desc">本网站及全部内容均由 GPT-5.3-Codex 自动生成。</p>
+
+      <div class="hero-chip-row">
+        <span class="hero-chip">Mass-Spring</span>
+        <span class="hero-chip">Collision</span>
+        <span class="hero-chip">Time Integration</span>
+      </div>
+
+      <div class="hero-core-card">
+        <p class="hero-core-label">Core Visual</p>
+        <p class="hero-core-title">Full-Screen Mass-Spring Mesh</p>
+        <p class="hero-core-text">以“可变形网格”表达图形学仿真的核心语义，低干扰、持续可读。</p>
+      </div>
+    </aside>
+
+    <section class="notes panel">
+      <div class="panel-head">
+        <h2>笔记列表</h2>
+        <p class="panel-meta">ZH / EN</p>
+      </div>
+      <ul id="noteList" class="note-list"></ul>
+    </section>
+  </main>
+
+  <script src="./background-elements.js?v=20260310c"></script>
+  <script>
+    const NOTES = [
+      {
+        id: "Lec1",
+        titleZh: "Lec1 - 物理仿真的离散化建模",
+        titleEn: "Lec1 - Discrete Modeling for Physical Simulation",
+        summaryZh: "质点-弹簧系统、力建模与时间步进。",
+        updated: "2026-03-10"
+      },
+      {
+        id: "Lec2",
+        titleZh: "Lec2 - 约束、碰撞与稳定积分",
+        titleEn: "Lec2 - Constraints, Collisions, and Stable Integration",
+        summaryZh: "约束投影、接触响应与半隐式欧拉。",
+        updated: "2026-03-17"
+      }
+    ];
+
+    const list = document.getElementById("noteList");
+
+    NOTES.forEach((note, index) => {
+      const item = document.createElement("li");
+      item.className = "note-card";
+      item.innerHTML = `
+        <a class="note-main" href="./note.html?note=${encodeURIComponent(note.id)}&lang=zh">
+          <div class="note-main-row">
+            <p class="note-index">Lec ${String(index + 1).padStart(2, "0")}</p>
+            <p class="note-date">${note.updated}</p>
+          </div>
+          <h3>${note.titleZh}</h3>
+          <p>${note.summaryZh}</p>
+          <p class="note-en">${note.titleEn}</p>
+        </a>
+      `;
+      list.appendChild(item);
+    });
+  </script>
+</body>
+</html>

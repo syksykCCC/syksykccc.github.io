@@ -1,0 +1,447 @@
+﻿:root {
+  --bg-main: #f7fbff;
+  --bg-alt: #eefcf6;
+  --ink: #18303b;
+  --ink-soft: #47626e;
+  --accent: #0f9ec9;
+  --accent-soft: #42c5e7;
+  --warn: #ffb25f;
+  --panel: rgba(255, 255, 255, 0.8);
+  --line: rgba(15, 158, 201, 0.26);
+  --code-bg: #eef8ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 88% 0%, #fff2de 0%, transparent 34%),
+    radial-gradient(circle at 10% 8%, #f0f9ff 0%, transparent 36%),
+    linear-gradient(180deg, var(--bg-main) 0%, var(--bg-alt) 100%);
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.bg-contour-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.72;
+}
+
+.shell {
+  width: min(980px, calc(100% - 2rem));
+  margin: 2.7rem auto 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.7rem 1.9rem;
+  background: var(--panel);
+  box-shadow: 0 12px 34px rgba(42, 95, 112, 0.12);
+}
+
+.hero-title {
+  margin: 0.5rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  line-height: 1.08;
+}
+
+.hero-title-main {
+  font-size: clamp(1.9rem, 2.9vw, 2.9rem);
+  font-weight: 800;
+  color: #143140;
+  letter-spacing: 0.01em;
+}
+
+.hero-title-sub {
+  align-self: flex-end;
+  transform: translateX(-0.5rem);
+  font-size: clamp(0.86rem, 1.32vw, 1.02rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #0f93bb;
+  font-family: Consolas, "Courier New", monospace;
+  border: 1px solid rgba(15, 158, 201, 0.3);
+  border-radius: 999px;
+  padding: 0.2rem 0.72rem 0.2rem 0.95rem;
+}
+
+.hero-tag {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #2aa7ca;
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
+.hero-desc {
+  margin: 0.85rem 0 0;
+  color: var(--ink-soft);
+}
+
+.panel {
+  margin-top: 1.08rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 12px 34px rgba(42, 95, 112, 0.1);
+  padding: 1.16rem;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.panel-head h2 {
+  margin: 0;
+  font-size: 1.16rem;
+}
+
+.link-btn {
+  border: 1px solid rgba(15, 158, 201, 0.38);
+  border-radius: 12px;
+  padding: 0.43rem 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.link-btn:hover {
+  text-decoration: none;
+  background: rgba(15, 158, 201, 0.08);
+}
+
+.note-list {
+  list-style: none;
+  margin: 0.95rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.72rem;
+}
+
+.note-main {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid rgba(15, 158, 201, 0.2);
+  border-radius: 14px;
+  padding: 0.86rem 0.96rem;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.78);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.note-main:hover {
+  background: rgba(240, 251, 255, 0.96);
+  border-color: rgba(15, 158, 201, 0.42);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.note-index {
+  font-family: Consolas, "Courier New", monospace;
+  color: #229fc1;
+  font-size: 0.9rem;
+}
+
+.note-main h3 {
+  margin: 0;
+  font-size: 1.03rem;
+}
+
+.note-main p {
+  margin: 0.28rem 0 0;
+  color: #4f6b78;
+  font-size: 0.91rem;
+}
+
+.note-en {
+  color: #7091a0;
+  font-size: 0.83rem;
+}
+
+.note-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+
+.note-date {
+  color: #5f7a87;
+  font-size: 0.83rem;
+}
+
+.note-lang-hint {
+  color: #b67b36;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.74rem;
+  border: 1px solid rgba(255, 178, 95, 0.35);
+  border-radius: 999px;
+  padding: 0.1rem 0.42rem;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.72rem;
+}
+
+.topbar .crumb {
+  color: #53707c;
+}
+
+.topbar .file-name {
+  font-family: Consolas, "Courier New", monospace;
+  color: #1a92b8;
+}
+
+.lang-switch {
+  display: inline-flex;
+  gap: 0.45rem;
+}
+
+.lang-btn {
+  border: 1px solid rgba(15, 158, 201, 0.34);
+  border-radius: 999px;
+  padding: 0.25rem 0.72rem;
+  color: #587582;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+}
+
+.lang-btn:hover {
+  text-decoration: none;
+  background: rgba(15, 158, 201, 0.09);
+}
+
+.lang-btn.active {
+  color: #f8fdff;
+  background: linear-gradient(90deg, #1da6cd, #59cae8);
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.note-display-title {
+  margin: 0 0 1rem;
+  padding-bottom: 0.62rem;
+  border-bottom: 1px solid rgba(15, 158, 201, 0.22);
+  color: #1f3f4d;
+  font-size: clamp(1.34rem, 2.22vw, 1.95rem);
+  line-height: 1.24;
+  letter-spacing: 0.01em;
+}
+
+.note-content {
+  line-height: 1.7;
+}
+
+.note-content h1,
+.note-content h2,
+.note-content h3,
+.note-content h4 {
+  margin: 1.12rem 0 0.62rem;
+  color: #234555;
+}
+
+.note-content p,
+.note-content li,
+.note-content blockquote {
+  color: #2d4f5f;
+}
+
+.note-content blockquote {
+  margin: 0.95rem 0;
+  padding: 0.14rem 0.84rem;
+  border-left: 3px solid rgba(15, 158, 201, 0.62);
+  background: rgba(232, 249, 255, 0.76);
+  border-radius: 8px;
+}
+
+.note-content pre {
+  background: var(--code-bg);
+  border: 1px solid rgba(15, 158, 201, 0.22);
+  border-radius: 10px;
+  padding: 0.76rem;
+  overflow-x: auto;
+}
+
+.note-content code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.92em;
+}
+
+.note-content :not(pre) > code {
+  background: rgba(15, 158, 201, 0.13);
+  border-radius: 5px;
+  padding: 0.08rem 0.3rem;
+}
+
+.note-content ul,
+.note-content ol {
+  padding-left: 1.35rem;
+}
+
+.note-content hr {
+  border: 0;
+  border-top: 1px solid rgba(15, 158, 201, 0.18);
+  margin: 1.15rem 0;
+}
+
+.note-content mjx-container {
+  margin: 0.16rem 0;
+}
+
+.note-content mjx-container[display="true"] {
+  margin: 0.68rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.note-fold {
+  --fold-border: rgba(15, 158, 201, 0.3);
+  --fold-bg: rgba(236, 249, 255, 0.78);
+  --fold-title: #1c7999;
+  --fold-icon: #2096bd;
+  --fold-divider: rgba(15, 158, 201, 0.2);
+  margin: 0.95rem 0;
+  border: 1px solid var(--fold-border);
+  border-radius: 10px;
+  background: var(--fold-bg);
+  overflow: hidden;
+}
+
+.note-fold summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.56rem 0.9rem;
+  color: var(--fold-title);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  user-select: none;
+}
+
+.note-fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.note-fold summary::before {
+  content: "+";
+  width: 1rem;
+  font-family: Consolas, "Courier New", monospace;
+  color: var(--fold-icon);
+}
+
+.note-fold[open] summary::before {
+  content: "-";
+}
+
+.note-fold-body {
+  border-top: 1px solid var(--fold-divider);
+  padding: 0.12rem 0.9rem 0.75rem;
+}
+
+.note-fold--remark {
+  --fold-border: rgba(15, 158, 201, 0.3);
+  --fold-bg: rgba(236, 249, 255, 0.78);
+  --fold-title: #1c7999;
+  --fold-icon: #2096bd;
+  --fold-divider: rgba(15, 158, 201, 0.2);
+}
+
+.note-fold--tip {
+  --fold-border: rgba(77, 175, 212, 0.34);
+  --fold-bg: rgba(235, 252, 255, 0.84);
+  --fold-title: #247799;
+  --fold-icon: #2f9fcc;
+  --fold-divider: rgba(77, 175, 212, 0.22);
+}
+
+.note-fold--warn {
+  --fold-border: rgba(236, 169, 86, 0.42);
+  --fold-bg: rgba(255, 246, 230, 0.86);
+  --fold-title: #996523;
+  --fold-icon: #d8923f;
+  --fold-divider: rgba(236, 169, 86, 0.24);
+}
+
+.note-fold--error {
+  --fold-border: rgba(210, 108, 108, 0.42);
+  --fold-bg: rgba(255, 238, 238, 0.88);
+  --fold-title: #9b3e3e;
+  --fold-icon: #d86b6b;
+  --fold-divider: rgba(210, 108, 108, 0.24);
+}
+
+.error {
+  color: #8f2e2e;
+  border: 1px solid rgba(210, 108, 108, 0.42);
+  background: rgba(255, 236, 236, 0.88);
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+
+@media (max-width: 700px) {
+  .shell {
+    width: calc(100% - 1rem);
+    margin-top: 1.2rem;
+  }
+
+  .hero,
+  .panel {
+    padding: 1rem;
+  }
+
+  .hero-title-sub {
+    align-self: flex-start;
+    transform: none;
+    letter-spacing: 0.18em;
+  }
+
+  .note-main {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .note-side {
+    align-items: flex-start;
+  }
+
+  .lang-switch {
+    width: 100%;
+  }
+}

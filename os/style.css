@@ -443,6 +443,49 @@ a:hover {
   padding: 0.08rem 0.32rem;
 }
 
+.note-content pre code[class*="language-"] {
+  display: block;
+  color: #d8ebff;
+  text-shadow: none;
+}
+
+.note-content pre code[class*="language-"] .token.comment,
+.note-content pre code[class*="language-"] .token.prolog,
+.note-content pre code[class*="language-"] .token.doctype,
+.note-content pre code[class*="language-"] .token.cdata {
+  color: #6f8da6;
+}
+
+.note-content pre code[class*="language-"] .token.keyword {
+  color: #75d6ff;
+}
+
+.note-content pre code[class*="language-"] .token.function {
+  color: #8bffc7;
+}
+
+.note-content pre code[class*="language-"] .token.string,
+.note-content pre code[class*="language-"] .token.char,
+.note-content pre code[class*="language-"] .token.attr-value {
+  color: #ffd08a;
+}
+
+.note-content pre code[class*="language-"] .token.number,
+.note-content pre code[class*="language-"] .token.boolean,
+.note-content pre code[class*="language-"] .token.constant {
+  color: #ffb0bc;
+}
+
+.note-content pre code[class*="language-"] .token.operator,
+.note-content pre code[class*="language-"] .token.punctuation {
+  color: #a9c5dd;
+}
+
+.note-content pre code[class*="language-"] .token.class-name,
+.note-content pre code[class*="language-"] .token.type {
+  color: #b6f0ff;
+}
+
 .note-content ul,
 .note-content ol {
   padding-left: 1.4rem;
@@ -613,3 +656,4 @@ a:hover {
     animation: none;
   }
 }
+

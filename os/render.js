@@ -76,7 +76,8 @@
     };
 
     const flushCode = () => {
-      const langClass = state.codeLang ? ` class="lang-${escapeHtml(state.codeLang)}"` : "";
+      const safeLang = escapeHtml((state.codeLang || "").toLowerCase());
+      const langClass = safeLang ? ` class="language-${safeLang} lang-${safeLang}"` : "";
       const code = escapeHtml(state.codeLines.join("\n"));
       html.push(`<pre><code${langClass}>${code}</code></pre>`);
       state.inCode = false;
@@ -217,3 +218,5 @@
     parseMarkdown
   };
 })();
+
+

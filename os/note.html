@@ -17,6 +17,9 @@
     };
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-clike.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-c.min.js"></script>
 </head>
 <body>
   <div id="bgOsElements" class="bg-os-elements" aria-hidden="true">
@@ -116,6 +119,17 @@
 
       if (retryCount < 40) {
         window.setTimeout(() => queueMathTypeset(retryCount + 1), 100);
+      }
+    }
+
+    function queueCodeHighlight(retryCount = 0) {
+      if (window.Prism && typeof window.Prism.highlightAllUnder === "function") {
+        window.Prism.highlightAllUnder(container);
+        return;
+      }
+
+      if (retryCount < 40) {
+        window.setTimeout(() => queueCodeHighlight(retryCount + 1), 100);
       }
     }
 
@@ -219,6 +233,7 @@
 
         setStandaloneTitle(parsed.title);
         container.innerHTML = window.OSNoteRenderer.parseMarkdown(parsed.body);
+        queueCodeHighlight();
         queueMathTypeset();
       } catch (error) {
         setStandaloneTitle("");
@@ -243,6 +258,9 @@
   </script>
 </body>
 </html>
+
+
+
 
 
 

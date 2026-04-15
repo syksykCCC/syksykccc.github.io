@@ -168,7 +168,7 @@ off_t lseek(int filedes, off_t offset, int whence);
 
 桥接函数：
 - `fileno(FILE *stream)`：从流中提取 fd。
-- `fdopen(int filedes, const char *mode)`：把已有 fd 包装成 `FILE*`。
+- `fdopen(int filedes, const char *opentype)`：把已有 fd 包装成 `FILE*`。
 
 ### 3.4 具体示例：`lowio.c`
 

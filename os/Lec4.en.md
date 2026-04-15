@@ -168,7 +168,7 @@ Pre-opened standard descriptors:
 
 Bridge helpers:
 - `fileno(FILE *stream)`: extract fd from a stream.
-- `fdopen(int filedes, const char *mode)`: wrap an existing fd as `FILE*`.
+- `fdopen(int filedes, const char *opentype)`: wrap an existing fd as `FILE*`.
 
 ### 3.4 Concrete example: `lowio.c`
 

@@ -18,6 +18,67 @@
     return out;
   }
 
+  function splitTableRow(line) {
+    if (!line || !line.includes("|")) {
+      return null;
+    }
+
+    const raw = line.trim();
+    if (!raw) {
+      return null;
+    }
+
+    let working = raw;
+    if (working.startsWith("|")) {
+      working = working.slice(1);
+    }
+    if (working.endsWith("|")) {
+      working = working.slice(0, -1);
+    }
+
+    const cells = [];
+    let current = "";
+
+    for (let i = 0; i < working.length; i += 1) {
+      const ch = working[i];
+
+      if (ch === "\\" && i + 1 < working.length && working[i + 1] === "|") {
+        current += "|";
+        i += 1;
+        continue;
+      }
+
+      if (ch === "|") {
+        cells.push(current.trim());
+        current = "";
+        continue;
+      }
+
+      current += ch;
+    }
+
+    cells.push(current.trim());
+    return cells;
+  }
+
+  function parseTableAlignment(cell) {
+    const normalized = cell.trim();
+    if (!/^:?-{3,}:?$/.test(normalized)) {
+      return null;
+    }
+
+    if (normalized.startsWith(":") && normalized.endsWith(":")) {
+      return "center";
+    }
+    if (normalized.endsWith(":")) {
+      return "right";
+    }
+    if (normalized.startsWith(":")) {
+      return "left";
+    }
+    return "";
+  }
+
   function closeLists(state, html) {
     while (state.listStack.length) {
       const tag = state.listStack.pop();
@@ -160,6 +221,60 @@
         closeLists(state, html);
         const level = heading[1].length;
         html.push(`<h${level}>${formatInline(heading[2].trim())}</h${level}>`);
+        continue;
+      }
+
+      const headerCells = splitTableRow(line);
+      const delimiterCells = i + 1 < lines.length ? splitTableRow(lines[i + 1]) : null;
+      if (
+        headerCells &&
+        delimiterCells &&
+        headerCells.length === delimiterCells.length &&
+        delimiterCells.every((cell) => parseTableAlignment(cell) !== null)
+      ) {
+        flushQuote();
+        closeLists(state, html);
+
+        const aligns = delimiterCells.map((cell) => parseTableAlignment(cell) || "");
+        const bodyRows = [];
+        let j = i + 2;
+
+        while (j < lines.length) {
+          const rowCells = splitTableRow(lines[j]);
+          if (!rowCells || rowCells.length !== headerCells.length) {
+            break;
+          }
+          bodyRows.push(rowCells);
+          j += 1;
+        }
+
+        const thHtml = headerCells
+          .map((cell, idx) => {
+            const alignAttr = aligns[idx] ? ` style="text-align:${aligns[idx]}"` : "";
+            return `<th${alignAttr}>${formatInline(cell)}</th>`;
+          })
+          .join("");
+
+        const bodyHtml = bodyRows
+          .map((row) => {
+            const tds = row
+              .map((cell, idx) => {
+                const alignAttr = aligns[idx] ? ` style="text-align:${aligns[idx]}"` : "";
+                return `<td${alignAttr}>${formatInline(cell)}</td>`;
+              })
+              .join("");
+            return `<tr>${tds}</tr>`;
+          })
+          .join("");
+
+        html.push('<div class="note-table-wrap"><table>');
+        html.push(`<thead><tr>${thHtml}</tr></thead>`);
+        if (bodyRows.length) {
+          html.push(`<tbody>${bodyHtml}</tbody>`);
+        }
+        html.push("</table></div>");
+
+        i = j - 1;
         continue;
       }
 

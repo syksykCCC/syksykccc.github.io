@@ -491,6 +491,41 @@ a:hover {
   padding-left: 1.4rem;
 }
 
+.note-content .note-table-wrap {
+  margin: 1rem 0;
+  overflow-x: auto;
+  border: 1px solid rgba(77, 216, 255, 0.24);
+  border-radius: 10px;
+  background: rgba(6, 19, 29, 0.55);
+}
+
+.note-content table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+}
+
+.note-content thead {
+  background: rgba(77, 216, 255, 0.1);
+}
+
+.note-content th,
+.note-content td {
+  border-bottom: 1px solid rgba(77, 216, 255, 0.18);
+  padding: 0.55rem 0.7rem;
+  color: #cbe2f2;
+  vertical-align: top;
+}
+
+.note-content th {
+  color: #e8f6ff;
+  font-weight: 700;
+}
+
+.note-content tbody tr:last-child td {
+  border-bottom: 0;
+}
+
 .note-content hr {
   border: 0;
   border-top: 1px solid rgba(77, 216, 255, 0.22);

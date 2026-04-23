@@ -94,25 +94,25 @@ The key process insight is that admission policy is dynamic: once a writer is wa
 
 ![Discussion questions](./lec09_materials/readers_writers_discussion_questions.png)
 
-1. **Question: Can readers starve under this policy?**
+- **Question: Can readers starve under this policy?**
 
 :::remark Answer
 Yes. This implementation is writer-preference. If writers keep arriving frequently, `WW` stays positive, and newly arriving readers remain blocked behind the writer queue for an unbounded time.
 :::
 
-2. **Question: What if reader exit becomes unconditional signal, i.e. `AR--; cond_signal(&okToWrite);`?**
+- **Question: What if reader exit becomes unconditional signal, i.e. `AR--; cond_signal(&okToWrite);`?**
 
 :::remark Answer
 Correctness is usually preserved by the writer-side `while ((AW + AR) > 0)` recheck, but efficiency drops. You can wake writers even when `AR > 0`, causing repeated futile wakeups and extra context switches.
 :::
 
-3. **Question: What if that signal is replaced by broadcast to writers?**
+- **Question: What if that signal is replaced by broadcast to writers?**
 
 :::remark Answer
 This creates a thundering-herd effect. Many writers wake up, compete for the same lock, discover the condition is still false, and sleep again. Throughput and cache locality both degrade.
 :::
 
-4. **Question: What if readers and writers share one condition variable (`okContinue`)?**
+- **Question: What if readers and writers share one condition variable (`okContinue`)?**
 
 ![Single-CV wrong-wakeup scenario](./lec09_materials/single_cv_wrong_wakeup_scenario.png)
 

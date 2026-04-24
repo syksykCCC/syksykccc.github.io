@@ -156,6 +156,7 @@
 
     for (let i = 0; i < lines.length; i += 1) {
       const line = lines[i];
+      const trimmed = line.trim();
 
       if (state.inCode) {
         if (line.startsWith("```")) {
@@ -172,6 +173,98 @@
         closeLists(state, html);
         state.inCode = true;
         state.codeLang = codeStart[1] || "";
+        continue;
+      }
+
+      const singleLineDollarMath = trimmed.match(/^\$\$(.+)\$\$$/);
+      if (singleLineDollarMath) {
+        flushQuote();
+        closeLists(state, html);
+        const expr = escapeHtml(singleLineDollarMath[1].trim());
+        html.push(`<div class="note-math">$$\n${expr}\n$$</div>`);
+        continue;
+      }
+
+      if (trimmed === "$$") {
+        flushQuote();
+        closeLists(state, html);
+
+        const mathLines = [];
+        let foundEnd = false;
+
+        for (let j = i + 1; j < lines.length; j += 1) {
+          const inner = lines[j];
+          const innerTrimmed = inner.trim();
+
+          if (innerTrimmed === "$$") {
+            i = j;
+            foundEnd = true;
+            break;
+          }
+
+          if (innerTrimmed.endsWith("$$")) {
+            mathLines.push(inner.replace(/\$\$\s*$/, ""));
+            i = j;
+            foundEnd = true;
+            break;
+          }
+
+          mathLines.push(inner);
+        }
+
+        if (!foundEnd) {
+          html.push(`<p>${formatInline(line.trim())}</p>`);
+          continue;
+        }
+
+        const expr = escapeHtml(mathLines.join("\n").trim());
+        html.push(`<div class="note-math">$$\n${expr}\n$$</div>`);
+        continue;
+      }
+
+      const singleLineBracketMath = trimmed.match(/^\\\[(.+)\\\]$/);
+      if (singleLineBracketMath) {
+        flushQuote();
+        closeLists(state, html);
+        const expr = escapeHtml(singleLineBracketMath[1].trim());
+        html.push(`<div class="note-math">\\[\n${expr}\n\\]</div>`);
+        continue;
+      }
+
+      if (trimmed === "\\[") {
+        flushQuote();
+        closeLists(state, html);
+
+        const mathLines = [];
+        let foundEnd = false;
+
+        for (let j = i + 1; j < lines.length; j += 1) {
+          const inner = lines[j];
+          const innerTrimmed = inner.trim();
+
+          if (innerTrimmed === "\\]") {
+            i = j;
+            foundEnd = true;
+            break;
+          }
+
+          if (innerTrimmed.endsWith("\\]")) {
+            mathLines.push(inner.replace(/\\\]\s*$/, ""));
+            i = j;
+            foundEnd = true;
+            break;
+          }
+
+          mathLines.push(inner);
+        }
+
+        if (!foundEnd) {
+          html.push(`<p>${formatInline(line.trim())}</p>`);
+          continue;
+        }
+
+        const expr = escapeHtml(mathLines.join("\n").trim());
+        html.push(`<div class="note-math">\\[\n${expr}\n\\]</div>`);
         continue;
       }
 

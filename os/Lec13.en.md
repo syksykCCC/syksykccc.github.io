@@ -315,47 +315,57 @@ Examples: `p(1)=50%`, `p(4)=20%`.
 
 ![FairRide dis-incentivizes strategic behavior](./lec13_materials/fairride_disincentive_strategy.png)
 
-To see why this discourages cheating, write:
+The paper’s Figure 3 gives an exact computation for why blocking removes cheating incentive.
+
+Let files A/B/C be unit-size, total cache size be 2, and access rates:
+- User 1: `A=10`, `B=5` (req/s).
+- User 2: `A=10`, `C=5` (req/s).
+
+Under truthful max-min allocation:
+- `A` is shared, and each user gets half of her private file (`B` or `C`).
+- Hit rate is computed as `access_rate × cached_fraction`.
+- So each user gets:
 
 $$
-q_j = 1 - p(n_j) = \frac{n_j}{n_j+1}
+10\times 1 + 5\times 0.5 = 12.5 \text{ hits/s}
 $$
 
-for the **allowed** probability of an unpaid request to file `j`.
-
-If a user injects unpaid traffic `r^{fake}_j` on file `j`, then:
-- expected allowed fake rate is `q_j r^{fake}_j`,
-- expected blocked fake rate is `p(n_j) r^{fake}_j`.
-
-Use the lecture-style cache example for a concrete calculation:
-- Files A/B/C, each 1 GB; total cache 2 GB.
-- Bob's real demand is `B:10 req/s, C:5 req/s`.
-- Honest state: cache `B=1`, `C=0.5`, so Bob real hit rate is
+Now User 2 cheats by spuriously increasing accesses to `C` so that `C` outranks `A` in her priority.
+- Then allocation becomes: `A` cached on behalf of User 1, `C` cached on behalf of User 2.
+- Without blocking (plain max-min), User 2 can still free-ride on `A`, so:
 
 $$
-HR_B^{honest}=\frac{10+0.5\times 5}{10+5}=\frac{12.5}{15}=83.3\%
+HR_2^{\text{cheat, no-block}} = 10 + 5 = 15
 $$
 
-- Bob cheats by injecting fake `A:+10 req/s`.
-- Since Alice also caches A, `n_A=1`, so `p(1)=50%`: **Allow 5, Block 5** (as shown in the slide).
+which is higher than `12.5`, so cheating is profitable.
 
-If the manipulated demand shifts cache from C to A, Bob's real utility drops:
-- one representative slide-consistent case is `C:0.5 -> 0`, giving
-
-$$
-HR_B^{cheat}=\frac{10+0\times 5}{15}=\frac{10}{15}=66.7\%
-$$
-
-Even a milder shift (`C:0.5 -> 0.25`) gives
+With FairRide, blocking is applied **exactly when user `i` accesses an in-memory file `j` that `i` does not cache/pay for**.
+If `n_j` is the number of other users caching `j`, then:
 
 $$
-HR_B^{cheat}=\frac{10+0.25\times 5}{15}=\frac{11.25}{15}=75\%<83.3\%
+p_{\text{block}}(j)=\frac{1}{n_j+1}, \qquad
+q_{\text{allow}}(j)=1-p_{\text{block}}(j)=\frac{n_j}{n_j+1}
 $$
 
-So cheating does not create useful gain: the fake stream is partly blocked, and cache distortion hurts Bob's own real-demand files.
+In this cheating state, User 2 is a non-owner of `A`, and only User 1 caches `A`, so `n_A=1`.
+- Expected hit contribution from `A` becomes `10\times q_{\text{allow}}(A)=10\times \frac12=5`.
+- Hit contribution from owned file `C` is `5`.
 
-:::remark Question: Does blocking also apply when users do not cheat? Will hit ratio drop anyway?
-Blocking can still apply to unpaid extra benefits in shared files, even without explicit cheating. The key design point is that baseline fair share is protected first; blocking targets opportunistic over-benefit. Therefore, users may lose some "extra" hits, but should not fall below the isolation/share-guarantee baseline. Cheating adds extra side effects: more blocked/delayed requests, polluted demand signals, and potential eviction of the cheater's own truly useful objects.
+Therefore:
+
+$$
+HR_2^{\text{cheat, FairRide}} = 5 + 5 = 10 < 12.5
+$$
+
+So cheating is no longer beneficial.
+
+:::remark Question: Does blocking apply even without cheating, and can it reduce hit ratio?
+Yes. The paper explicitly notes that the system cannot always distinguish strategic cheating from legitimate access-pattern shifts, so a well-behaved user can also be partially blocked in some shared-file situations. This is why FairRide sacrifices Pareto efficiency. However, FairRide still guarantees isolation-guarantee: user utility remains no worse than static isolation.
+:::
+
+:::remark Question: Can a strategic user bypass probabilistic blocking by retrying?
+With pure random blocking, repeated retries can amplify pass probability. FairRide addresses this in implementation by replacing conceptual blocking with expected delaying, which makes repeated probing ineffective in expectation and keeps strategy-proof behavior in practice.
 :::
 
 ### 5.5 Final property tradeoff

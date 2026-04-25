@@ -349,7 +349,7 @@ q_{\text{allow}}(j)=1-p_{\text{block}}(j)=\frac{n_j}{n_j+1}
 $$
 
 In this cheating state, User 2 is a non-owner of `A`, and only User 1 caches `A`, so `n_A=1`.
-- Expected hit contribution from `A` becomes `10\times q_{\text{allow}}(A)=10\times \frac12=5`.
+- Expected hit contribution from `A` becomes $10\times q_{\text{allow}}(A)=10\times \frac12=5$.
 - Hit contribution from owned file `C` is `5`.
 
 Therefore:

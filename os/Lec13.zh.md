@@ -349,7 +349,7 @@ q_{\text{allow}}(j)=1-p_{\text{block}}(j)=\frac{n_j}{n_j+1}
 $$
 
 在该作弊状态中，User 2 对 `A` 是非 owner，且只有 User 1 缓存 `A`，因此 `n_A=1`。
-- `A` 的期望命中贡献变成 `10\times q_{\text{allow}}(A)=10\times \frac12=5`。
+- `A` 的期望命中贡献变成 $10\times q_{\text{allow}}(A)=10\times \frac12=5$。
 - 自己拥有的 `C` 贡献是 `5`。
 
 因此：

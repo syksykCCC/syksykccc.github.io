@@ -315,8 +315,47 @@ Examples: `p(1)=50%`, `p(4)=20%`.
 
 ![FairRide dis-incentivizes strategic behavior](./lec13_materials/fairride_disincentive_strategy.png)
 
-:::remark Question: If cheating is easy, why does blocking help?
-Blocking makes cheating unprofitable in expectation. A strategic user faces reduced effective access gains, so dishonest traffic injection no longer improves final utility.
+To see why this discourages cheating, write:
+
+$$
+q_j = 1 - p(n_j) = \frac{n_j}{n_j+1}
+$$
+
+for the **allowed** probability of an unpaid request to file `j`.
+
+If a user injects unpaid traffic `r^{fake}_j` on file `j`, then:
+- expected allowed fake rate is `q_j r^{fake}_j`,
+- expected blocked fake rate is `p(n_j) r^{fake}_j`.
+
+Use the lecture-style cache example for a concrete calculation:
+- Files A/B/C, each 1 GB; total cache 2 GB.
+- Bob's real demand is `B:10 req/s, C:5 req/s`.
+- Honest state: cache `B=1`, `C=0.5`, so Bob real hit rate is
+
+$$
+HR_B^{honest}=\frac{10+0.5\times 5}{10+5}=\frac{12.5}{15}=83.3\%
+$$
+
+- Bob cheats by injecting fake `A:+10 req/s`.
+- Since Alice also caches A, `n_A=1`, so `p(1)=50%`: **Allow 5, Block 5** (as shown in the slide).
+
+If the manipulated demand shifts cache from C to A, Bob's real utility drops:
+- one representative slide-consistent case is `C:0.5 -> 0`, giving
+
+$$
+HR_B^{cheat}=\frac{10+0\times 5}{15}=\frac{10}{15}=66.7\%
+$$
+
+Even a milder shift (`C:0.5 -> 0.25`) gives
+
+$$
+HR_B^{cheat}=\frac{10+0.25\times 5}{15}=\frac{11.25}{15}=75\%<83.3\%
+$$
+
+So cheating does not create useful gain: the fake stream is partly blocked, and cache distortion hurts Bob's own real-demand files.
+
+:::remark Question: Does blocking also apply when users do not cheat? Will hit ratio drop anyway?
+Blocking can still apply to unpaid extra benefits in shared files, even without explicit cheating. The key design point is that baseline fair share is protected first; blocking targets opportunistic over-benefit. Therefore, users may lose some "extra" hits, but should not fall below the isolation/share-guarantee baseline. Cheating adds extra side effects: more blocked/delayed requests, polluted demand signals, and potential eviction of the cheater's own truly useful objects.
 :::
 
 ### 5.5 Final property tradeoff

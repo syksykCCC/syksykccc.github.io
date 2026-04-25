@@ -144,11 +144,39 @@ DRF 将任务需求写成向量，例如 `<2, 3, 1>`，并假设资源可分。
 一个自然基线是 **Asset Fairness**：
 - 让每个用户“资源份额之和”相等。
 
-但它可能违反 share guarantee。课上示例（70 CPU, 70 GB RAM）：
-- User 1 需求：`<2 CPU, 2 GB>`。
-- User 2 需求：`<1 CPU, 2 GB>`。
-- Asset fairness 分配为：User 1 得 30 CPU + 30 GB（15 tasks），User 2 得 20 CPU + 40 GB（20 tasks）。
-- User 1 在两种资源上都低于 50%，甚至在“独享 50% 集群”时更好。
+这个基线可能违反 **share guarantee**。考虑如下配置：
+- 总资源：`70 CPU, 70 GB RAM`。
+- User 1 每个任务需求：`<2 CPU, 2 GB>`。
+- User 2 每个任务需求：`<1 CPU, 2 GB>`。
+
+设 User 1 运行 `x` 个任务，User 2 运行 `y` 个任务。
+
+Asset fairness 要求两名用户“份额之和”相等：
+
+$$
+\frac{2x}{70} + \frac{2x}{70} = \frac{y}{70} + \frac{2y}{70}
+\Rightarrow 4x = 3y \Rightarrow y = \frac{4x}{3}
+$$
+
+资源约束为：
+
+$$
+2x + y \le 70 \quad (\text{CPU}), \qquad 2x + 2y \le 70 \quad (\text{RAM})
+$$
+
+代入 `y = 4x/3`：
+- CPU 约束：`2x + 4x/3 <= 70`，得到 `x <= 21`。
+- RAM 约束：`2x + 8x/3 <= 70`，得到 `x <= 15`。
+
+因此满足 asset-fairness 等式且可行的点为 `x = 15`, `y = 20`。
+- User 1 分配：`30 CPU, 30 GB`。
+- User 2 分配：`20 CPU, 40 GB`。
+
+User 1 在 CPU 和 RAM 上都只有 `30/70 = 42.86%`，低于 `50%`。
+
+:::remark 问题：这为什么违背了 share guarantee 的直觉？
+在 2 用户系统中，一个自然直觉是每个用户在有需求时应当至少拿到一半份额。这里 User 1 在两类关键资源上都只有 42.86%，甚至不如“固定切半”的独享分区（`35 CPU, 35 GB`，最多可跑 17.5 个任务）。这说明“份额求和相等”并不是多资源场景下稳健的公平定义。
+:::
 
 ### 4.4 Dominant Resource Fairness（DRF）
 关键定义如下：
@@ -167,6 +195,46 @@ DRF 规则：
 
 ![dominant resource 与 dominant share 示例](./lec13_materials/drf_dominant_resource_and_share.png)
 
+下面给出一个完整的 DRF 分配计算例子：
+- 总资源：`<9 CPU, 18 GB>`。
+- User 1 每个任务需求：`<1 CPU, 4 GB>`（dominant resource 是 memory）。
+- User 2 每个任务需求：`<3 CPU, 1 GB>`（dominant resource 是 CPU）。
+
+设 User 1 运行 `x` 个任务，User 2 运行 `y` 个任务。
+
+DRF 要求 dominant share 相等：
+
+$$
+\frac{4x}{18} = \frac{3y}{9}
+\Rightarrow \frac{2x}{9} = \frac{y}{3}
+\Rightarrow 2x = 3y
+\Rightarrow x = 1.5y
+$$
+
+容量约束：
+
+$$
+x + 3y \le 9 \quad (\text{CPU}), \qquad 4x + y \le 18 \quad (\text{RAM})
+$$
+
+将 `x = 1.5y` 代入 CPU 约束：
+
+$$
+1.5y + 3y = 4.5y \le 9 \Rightarrow y \le 2
+$$
+
+取 `y = 2`，得到 `x = 3`。
+- User 1 分配：`<3 CPU, 12 GB>`。
+- User 2 分配：`<6 CPU, 2 GB>`。
+- User 1 的 dominant share（memory）为 `12/18 = 66.7%`。
+- User 2 的 dominant share（CPU）为 `6/9 = 66.7%`。
+
+因此 DRF 的结果正是“让 dominant share 对齐”。
+
+:::remark 问题：为什么 DRF 比较 dominant share，而不是资源总份额？
+因为不同用户的瓶颈资源可能不同。总份额会掩盖真实瓶颈并产生不公平；dominant share 直接刻画“谁在自己的瓶颈资源上更紧张”。
+:::
+
 ### 4.5 DRF 与 CEEI，以及性质比较
 另一种经济学思路是 **CEEI (Competitive Equilibrium from Equal Incomes)**：
 - 先给每个用户 1/n 的每类资源。
@@ -174,8 +242,12 @@ DRF 规则：
 
 CEEI 在部分场景可提升利用率，但课上例子显示其可被操纵，因此 **not strategy-proof**。
 
+:::remark 问题：为什么 CEEI 可能看起来更高效，却仍然不满足 strategy-proofness？
+在 CEEI 中，用户的声明会影响市场结果与有效价格。策略性用户可以通过虚报偏好改变价格结构，再购买对自己更有利的资源组合。于是系统利用率可能提升，但“诚实上报最优”这一点被破坏了。
+:::
+
 :::remark 问题：为什么 max-min fairness 不够，必须引入 DRF？
-因为在多资源系统中，不同用户会受不同瓶颈资源约束。DRF 通过 dominant share 比较用户，从而在多资源情形下保留更强的公平保证。
+因为多资源系统里，不同用户受不同瓶颈约束。DRF 通过 dominant share 比较用户，相比 asset-based 的均衡方式更能保持 share guarantee，并在诚实申报需求时保持策略无关性。
 :::
 
 课上性质对比表显示，DRF 能同时满足更多关键性质。

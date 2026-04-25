@@ -144,11 +144,39 @@ DRF models each task with a demand vector, e.g. `<2, 3, 1>`, and assumes divisib
 A natural baseline is **Asset Fairness**:
 - Equalize each user’s sum of resource shares.
 
-But this can fail share guarantee. In the lecture example (70 CPU, 70 GB RAM):
-- User 1 demand: `<2 CPU, 2 GB>`.
-- User 2 demand: `<1 CPU, 2 GB>`.
-- Asset fairness gives User 1: 30 CPU + 30 GB (15 tasks), User 2: 20 CPU + 40 GB (20 tasks).
-- User 1 gets below 50% on both resources and can be better off in a separate 50% cluster.
+This baseline can fail **share guarantee**. Consider:
+- Total resources: `70 CPU, 70 GB RAM`.
+- User 1 demand per task: `<2 CPU, 2 GB>`.
+- User 2 demand per task: `<1 CPU, 2 GB>`.
+
+Let User 1 run `x` tasks and User 2 run `y` tasks.
+
+Asset fairness equalizes the sum of shares:
+
+$$
+\frac{2x}{70} + \frac{2x}{70} = \frac{y}{70} + \frac{2y}{70}
+\Rightarrow 4x = 3y \Rightarrow y = \frac{4x}{3}
+$$
+
+Resource constraints are:
+
+$$
+2x + y \le 70 \quad (\text{CPU}), \qquad 2x + 2y \le 70 \quad (\text{RAM})
+$$
+
+Substitute `y = 4x/3`:
+- CPU: `2x + 4x/3 <= 70` gives `x <= 21`.
+- RAM: `2x + 8x/3 <= 70` gives `x <= 15`.
+
+So the feasible point under asset-fairness equality is `x = 15`, `y = 20`.
+- User 1 allocation: `30 CPU, 30 GB`.
+- User 2 allocation: `20 CPU, 40 GB`.
+
+User 1 gets only `30/70 = 42.86%` on both CPU and RAM, which is below `50%`.
+
+:::remark Question: Why does this violate share guarantee intuition?
+In a 2-user system, a natural expectation is that each user should be able to secure at least a half-share when needed. Here User 1 receives only 42.86% on both key resources, and could do better in a dedicated 50% partition (`35 CPU, 35 GB`, i.e., up to 17.5 tasks). This is exactly why sum-of-shares is not a robust fairness metric in multi-resource settings.
+:::
 
 ### 4.4 Dominant Resource Fairness (DRF)
 The key definitions are:
@@ -167,6 +195,46 @@ DRF policy:
 
 ![Dominant resource and dominant share](./lec13_materials/drf_dominant_resource_and_share.png)
 
+Now walk through a full DRF allocation example:
+- Total resources: `<9 CPU, 18 GB>`.
+- User 1 demand per task: `<1 CPU, 4 GB>` (dominant resource is memory).
+- User 2 demand per task: `<3 CPU, 1 GB>` (dominant resource is CPU).
+
+Let User 1 run `x` tasks and User 2 run `y` tasks.
+
+Dominant-share equality condition:
+
+$$
+\frac{4x}{18} = \frac{3y}{9}
+\Rightarrow \frac{2x}{9} = \frac{y}{3}
+\Rightarrow 2x = 3y
+\Rightarrow x = 1.5y
+$$
+
+Capacity constraints:
+
+$$
+x + 3y \le 9 \quad (\text{CPU}), \qquad 4x + y \le 18 \quad (\text{RAM})
+$$
+
+Substitute `x = 1.5y` into CPU:
+
+$$
+1.5y + 3y = 4.5y \le 9 \Rightarrow y \le 2
+$$
+
+Take `y = 2`, then `x = 3`.
+- User 1 allocation: `<3 CPU, 12 GB>`.
+- User 2 allocation: `<6 CPU, 2 GB>`.
+- User 1 dominant share (memory): `12/18 = 66.7%`.
+- User 2 dominant share (CPU): `6/9 = 66.7%`.
+
+So DRF equalizes dominant shares as intended.
+
+:::remark Question: Why does DRF compare dominant share instead of total share?
+Because different users are bottlenecked by different resources. Total share can hide bottlenecks and produce unfair outcomes; dominant share directly tracks each user’s true limiting resource.
+:::
+
 ### 4.5 DRF vs CEEI and policy properties
 An economist-inspired alternative is **CEEI (Competitive Equilibrium from Equal Incomes)**:
 - Give each user 1/n of every resource.
@@ -174,8 +242,12 @@ An economist-inspired alternative is **CEEI (Competitive Equilibrium from Equal 
 
 CEEI may improve utilization in some cases, but the lecture example shows it is vulnerable to manipulation; it is **not strategy-proof**.
 
+:::remark Question: Why can CEEI look efficient but still fail strategy-proofness?
+In CEEI, users can influence market outcomes through declared demand and thereby affect effective prices. A strategic user may misreport preferences to reshape prices, then purchase a bundle that increases real utility. So utilization may improve, but truthful reporting is no longer guaranteed.
+:::
+
 :::remark Question: Why is max-min fairness not enough, and why do we need DRF?
-With multiple resource types, users can dominate different bottlenecks. DRF compares users by dominant shares, which preserves stronger fairness guarantees than scalar-style sharing.
+With multiple resource types, users can dominate different bottlenecks. DRF compares users by dominant shares, preserves share guarantee better than asset-based balancing, and remains strategy-proof under truthful demand declarations.
 :::
 
 The policy comparison table in this lecture highlights that DRF satisfies many desirable properties simultaneously.

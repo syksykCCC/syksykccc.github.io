@@ -4,484 +4,559 @@
 
 - 题型：大题 5 题，每题 20 分，共 100 分。
 - 覆盖比例：期中前内容 1 题，期中后内容 4 题。
-- 题目风格：每题有明确场景、数据和状态，包含计算、代码/伪代码填空、状态机、崩溃点分析和简短设计题。
-- 答题建议：涉及算法模拟时写出关键序列；涉及可靠性时明确说明 crash point、durable state 和 recovery action。
+- 题目风格：本卷强调构造、证明、流程填空、符号分析和系统不变量；少做机械数值模拟。
+- 答题建议：证明题写清楚关键不变量或反证点；流程题写清楚触发条件、状态变化和失败模式。
 
-## 大题一：实时门诊调度与资源分配（20 分）
+## 大题一：急救机器人调度、锁协议与死锁避免（20 分）
 
-某医院门诊系统运行在单 CPU 教学 OS 上。系统中有周期性实时任务、普通后台任务和共享设备锁。你需要判断实时调度是否可行，并处理优先级反转和死锁避免。
+某医院急救机器人运行在单 CPU 实时内核上。机器人同时执行药品配送、影像采集、语音提醒和后台日志上传。系统采用固定优先级：数值越小优先级越高。任务和可能使用的资源如下：
 
-### Part A：EDF 可调度性与时间线（5 分）
-
-三个周期性任务如下，周期等于相对 deadline。所有任务在 `t=0` 同时释放第一批 job，之后按周期释放。
-
-| 任务 | 含义 | 执行时间 C | 周期 P | 相对 deadline D |
+| 任务 | 优先级 | 每次计算时间 | 周期/最迟响应 | 可能访问的资源 |
 | --- | --- | --- | --- | --- |
-| T1 | 分诊提醒 | 1 | 4 | 4 |
-| T2 | 影像预取 | 2 | 5 | 5 |
-| T3 | 化验同步 | 1 | 10 | 10 |
+| `Alarm` | 1 | `C_A` | `D_A` | `Speaker` |
+| `Vision` | 2 | `C_V` | `D_V` | `Camera`, `MapDB` |
+| `Drug` | 3 | `C_D` | `D_D` | `MapDB`, `Arm` |
+| `Logger` | 4 | best effort | none | `Flash` |
 
-1. 计算 EDF 利用率和可调度性判定。（1.5 分）
-2. 按 EDF 给出 `t=0` 到 `t=10` 的一种执行时间线，忽略上下文切换成本。（2.5 分）
-3. 若加入一个永远 ready 的后台任务 B，EDF 在上述实时 job 都未就绪时应如何处理 B？（1 分）
+资源的使用关系为：
 
-### Part B：RR 不能保证 deadline 的反例（3 分）
+- `Speaker` 只会被 `Alarm` 使用。
+- `Camera` 只会被 `Vision` 使用。
+- `MapDB` 会被 `Vision` 与 `Drug` 使用。
+- `Arm` 只会被 `Drug` 使用。
+- `Flash` 只会被 `Logger` 使用。
 
-现在有三个一次性任务在 `t=0` 到达，RR 时间片 `q=1`，初始 ready queue 顺序为 `L1, L2, H`：
+### Part A：Priority Ceiling Protocol 流程填空（5 分）
 
-| 任务 | 执行时间 C | deadline |
-| --- | --- | --- |
-| L1 | 1 | 100 |
-| L2 | 1 | 100 |
-| H | 1 | 2 |
-
-1. 按 RR 写出执行顺序和 H 的完成时刻。（1.5 分）
-2. H 是否满足 deadline？这说明 RR 与 EDF 的目标差异是什么？（1.5 分）
-
-### Part C：优先级反转与 donation（4 分）
-
-系统有三个线程：
-
-- `L`：低优先级，持有锁 `devLock`，还需运行 3 ms 才能释放。
-- `H`：高优先级，在 `t=1` 到达，需要 `devLock`。
-- `M`：中优先级，在 `t=2` 到达，不需要锁，可运行 10 ms。
-
-单 CPU，严格优先级调度。
-
-1. 不使用 priority donation 时，说明 `t=1` 后 H 为什么会被间接阻塞很久。（1.5 分）
-2. 使用 priority donation 后，`L` 的优先级如何变化？H 最早可在何时获得锁？（1.5 分）
-3. 为什么让 H 自旋等待 `devLock` 反而可能造成无进展？（1 分）
-
-### Part D：Banker 安全态判断（6 分）
-
-系统有三类资源 `A/B/C`。当前 Available 为 `[3,3,2]`。Allocation 与 Max 如下：
-
-| 进程 | Allocation | Max |
-| --- | --- | --- |
-| P0 | `[0,1,0]` | `[7,5,3]` |
-| P1 | `[2,0,0]` | `[3,2,2]` |
-| P2 | `[3,0,2]` | `[9,0,2]` |
-| P3 | `[2,1,1]` | `[2,2,2]` |
-| P4 | `[0,0,2]` | `[4,3,3]` |
-
-1. 写出 Need 矩阵。（2 分）
-2. 判断当前状态是否安全；若安全，给出一条安全序列。（2 分）
-3. 若 P1 请求 `[1,0,2]`，是否可立即批准？请先检查请求是否不超过 Need/Available，再做安全性判断。（2 分）
-
-### Part E：死锁预防策略选择（2 分）
-
-门诊系统中有打印机、影像缓存和药房接口三个资源。有同学建议“所有线程必须按全局顺序申请资源”。这个策略破坏了死锁四条件中的哪一个？它的主要代价是什么？
-
-:::tip 答案与解析
-### Part A
-
-1. 利用率为 `1/4 + 2/5 + 1/10 = 0.25 + 0.4 + 0.1 = 0.75 <= 1`。在独立、可抢占、周期等于 deadline 的理想模型下，EDF 可调度。
-2. 一种 EDF 时间线：`0-1:T1`，`1-3:T2`，`3-4:T3`，`4-5:T1`，`5-7:T2`，`7-8:idle/B`，`8-9:T1`，`9-10:idle/B`。到 `t=10` 前所有已释放 job 都满足 deadline。
-3. EDF 是 work-conserving 时，可以在没有实时 job ready 时运行 B；一旦实时 job 到达且 deadline 更早，应抢占 B。
-
-### Part B
-
-1. RR 顺序为 `0-1:L1`，`1-2:L2`，`2-3:H`，H 完成时刻为 `t=3`。
-2. H 的 deadline 是 2，因此 miss。RR 主要提供时间片轮转和等待公平，不理解 deadline；EDF 按绝对 deadline 选择任务，目标是实时可预测性。
-
-### Part C
-
-1. `t=1` 时 H 到达并请求 `devLock`，但锁由 L 持有，H 阻塞。`t=2` 时 M 到达，严格优先级下 M 高于 L，会持续运行，导致 L 无法获得 CPU 释放锁，H 被 M 间接延迟。
-2. Donation 把 H 的高优先级临时捐给锁持有者 L。L 会抢在 M 前运行，运行 3 ms 后释放锁；若 L 从 `t=1` 开始继续运行，则 H 最早约在 `t=4` 获得锁。
-3. H 自旋会占用 CPU；单 CPU 上锁持有者 L 得不到运行机会，无法释放锁，系统忙着检查条件却没有有效进展。
-
-### Part D
-
-1. Need = Max - Allocation：
-   - P0 `[7,4,3]`
-   - P1 `[1,2,2]`
-   - P2 `[6,0,0]`
-   - P3 `[0,1,1]`
-   - P4 `[4,3,1]`
-2. 当前安全。一条安全序列是 `P1 -> P3 -> P4 -> P0 -> P2`：  
-   Available `[3,3,2]` 满足 P1，释放后 `[5,3,2]`；满足 P3，释放后 `[7,4,3]`；满足 P4，释放后 `[7,4,5]`；满足 P0，释放后 `[7,5,5]`；满足 P2。
-3. P1 请求 `[1,0,2]` 不超过 Need `[1,2,2]`，也不超过 Available `[3,3,2]`。试探分配后 Available `[2,3,0]`，P1 Allocation `[3,0,2]`，Need `[0,2,0]`。可先完成 P1，释放后 Available `[5,3,2]`，之后仍可按 `P3 -> P4 -> P0 -> P2` 完成，因此可批准。
-
-### Part E
-
-强制全局资源申请顺序破坏 **circular wait** 条件。主要代价是灵活性下降：线程可能不得不提前申请暂时不用的资源，或按不自然顺序重构代码，降低并发度和资源利用率。
-:::
-
-## 大题二：跨进程 `mmap` 数据分析器（20 分）
-
-两个进程 `P` 和 `Q` 同时分析文件 `data.bin`。文件大小为 `10,000` 字节，页大小为 `4096` 字节。`P` 执行：
-
-```c
-int fd = open("data.bin", O_RDWR);
-char *p = mmap(0, 10000, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0);
-```
-
-`Q` 稍后也用 `MAP_SHARED` 映射同一文件，但映射到不同虚拟地址。
-
-### Part A：参数与页数（4 分）
-
-1. 解释 `mmap(0, 10000, PROT_READ|PROT_WRITE, MAP_FILE|MAP_SHARED, fd, 0)` 中 `0`、`10000`、权限和 `MAP_SHARED` 的含义。（2 分）
-2. 该映射覆盖几个虚拟页？最后一页有多少字节超出文件长度？（1 分）
-3. 访问 `p[5000]` 和 `p[9000]` 分别落在哪个文件页和页内 offset？（1 分）
-
-### Part B：File-backed page fault 路径（4 分）
-
-初始时没有任何文件页驻留在内存中。
-
-1. `P` 第一次读取 `p[5000]` 时，OS 需要执行哪些关键步骤？（2 分）
-2. 若随后 `Q` 读取同一文件 offset `5000`，是否必须再次从磁盘读？为什么？（1 分）
-3. 如果 `P` 写 `p[9000]='X'`，该页会被标记成什么状态？什么时候可能落盘？（1 分）
-
-### Part C：`MAP_SHARED`、`MAP_PRIVATE` 与可见性（4 分）
-
-假设文件初始 `data.bin[20]='a'`。
-
-1. `P` 用 `MAP_SHARED` 写 `p[20]='b'` 后，`Q` 的共享映射读取 offset 20，理论上应看到什么？（1 分）
-2. 若 `Q` 是在写入后用普通 `read(fd, &c, 1)` 读取 offset 20，为什么可见性可能受 buffer cache/writeback 语义影响，但不应被理解为 `P` 的私有用户缓冲？（1 分）
-3. 若 `P` 改用 `MAP_PRIVATE` 写 `p[20]='c'`，文件和 `Q` 的共享映射是否应看到 `'c'`？（1 分）
-4. `msync` 或 `munmap` 在这里能提供什么作用？（1 分）
-
-### Part D：画图题：不同虚拟地址共享同一页（4 分）
-
-请画出或文字描述以下映射关系：`P` 把文件页 1 映射到虚拟页 `0x401`，`Q` 把同一文件页 1 映射到虚拟页 `0x900`，二者共享同一物理页框 `F7`。回答：
-
-1. 两个进程的虚拟地址是否必须相同？（1 分）
-2. 两个 PTE 至少应包含哪些关键信息？（1 分）
-3. 若内存压力下要淘汰 `F7`，OS 必须更新哪些状态？（2 分）
-
-### Part E：`mmap` 与 `read/write` 的取舍（4 分）
-
-某同学要扫描整个 10 GB 数据文件并统计字节频率。
-
-1. 使用 `mmap` 的一个优势和一个风险/复杂性是什么？（2 分）
-2. 使用显式 `read` 循环的一个优势和一个劣势是什么？（2 分）
-
-:::tip 答案与解析
-### Part A
-
-1. 第一个 `0` 表示让 OS 选择映射起始虚拟地址；`10000` 是映射长度；`PROT_READ|PROT_WRITE` 允许读写；`MAP_FILE|MAP_SHARED` 表示区域由文件支持，修改采用共享文件语义。
-2. `ceil(10000/4096)=3` 页。3 页总容量 `12288` 字节，超出文件 `2288` 字节。
-3. `p[5000]` 在文件页 `floor(5000/4096)=1`，offset `904`。`p[9000]` 在文件页 `2`，offset `808`。
-
-### Part B
-
-1. CPU 访问未驻留页触发 page fault；OS 检查地址属于合法 file-backed region；在文件/页缓存中查找对应 block；分配页框；从磁盘或 buffer cache 读入文件页；更新 PTE/TLB；重启 faulting instruction。
-2. 不一定。若 P 的 fault 已把文件页 1 读入 page cache/物理页框，Q 的 PTE 可映射到同一物理页框，不需要再次读磁盘。
-3. 页会变成 dirty file-backed page。它可能在 `msync`、内存回收、周期性 writeback、`munmap` 或文件关闭相关路径中被写回，具体时机由 OS 策略决定。
-
-### Part C
-
-1. 应看到 `'b'`，因为二者共享同一文件支持的映射，最终可指向同一 cached physical page。
-2. `mmap` 写入不是 `fwrite` 那种 C library 私有缓冲；它修改的是页缓存中的 file-backed page。普通 `read` 也通常经过同一 buffer/page cache，因此应与内核缓存一致，但持久化到磁盘的时间仍受 dirty writeback 控制。
-3. 不应看到。`MAP_PRIVATE` 写入触发 copy-on-write，P 获得私有匿名副本；文件和 Q 的 shared mapping 不应被改成 `'c'`。
-4. `msync` 可请求把 dirty mapped pages 同步到文件，提高持久化时序可控性；`munmap` 解除映射，并可能触发相关清理和写回安排。
-
-### Part D
-
-1. 不必须。共享的是文件页/物理页框，不是虚拟地址数值。
-2. PTE 至少包含 valid、PPN=`F7`、权限位、dirty/use 等状态；OS 的 VMA/映射元数据还记录该页来自 `data.bin` 的文件页 1。
-3. 如果 `F7` dirty，需要先写回文件对应位置；随后必须通过 reverse mapping/coremap 找到 P 的 VPN `0x401` 和 Q 的 VPN `0x900` 的 PTE，把它们标成 non-resident/invalid，并保留 backing store 信息以便下次 fault 恢复。
-
-### Part E
-
-1. `mmap` 优势是把文件访问统一成内存访问，OS 可按需分页、共享页缓存，代码可直接随机访问；风险是 page fault 时机隐式，错误处理、SIGBUS、持久化时序和地址空间压力更复杂。
-2. `read` 循环优势是 I/O 边界和错误返回显式，缓冲大小、重试和顺序访问策略更可控；劣势是需要手动管理用户缓冲和拷贝，随机访问时代码较繁琐，也可能多一次内核到用户拷贝。
-:::
-
-## 大题三：Buffer Cache 与预取污染事故（20 分）
-
-某数据库在夜间做全表扫描，导致白天常用的索引块被挤出 buffer cache。你需要分析 LRU 的失败模式，并设计更合适的缓存策略。
-
-### Part A：LRU 与 Use Once（5 分）
-
-Buffer cache 容量为 4 个 block，初始为空。访问序列为：
+系统希望使用 Priority Ceiling Protocol（PCP）限制优先级反转。定义资源的 priority ceiling 为“所有可能锁该资源的任务中的最高优先级”。补全流程：
 
 ```text
-A B C D A B S1 S2 S3 S4 A B C D
+When task T requests lock R:
+  1. compute ceiling(R) = ________________________(1)
+  2. compute system_ceiling = min priority number among
+       ceilings of resources currently locked by tasks other than T
+  3. T may lock R only if
+       priority(T) is ________________________(2) system_ceiling
+       or T already holds the resource that contributes system_ceiling
+  4. if T is blocked by a lower-priority lock holder L,
+       L temporarily ________________________(3)
 ```
 
-其中 `A/B/C/D` 是热点索引块，`S1..S4` 是一次性顺序扫描块。
+1. 填写 `(1)`、`(2)`、`(3)`。（3 分）
+2. 根据表格，写出 `ceiling(Speaker)`、`ceiling(MapDB)`、`ceiling(Arm)`。（2 分）
 
-1. 使用普通 LRU，计算 hit 次数和 miss 次数。（2 分）
-2. 使用 Use Once 策略：`S1..S4` 被读取后不放入主缓存，计算 hit 次数和 miss 次数。（2 分）
-3. 用一句话解释为什么 LRU 在该 streaming workload 上表现差。（1 分）
+### Part B：构造优先级反转场景（4 分）
 
-### Part B：一次跨 block 写入会弄脏哪些块？（4 分）
+只使用普通 mutex 和严格优先级调度，不使用 donation/PCP。构造一个执行片段，使 `Vision` 因为 `Drug` 持有 `MapDB`，又被 `Logger` 间接延迟。要求说明：
 
-文件当前大小为 `4096` 字节，只有 logical block 0 已分配。应用调用：
+1. 初始谁先运行并获得哪个锁。（1 分）
+2. `Vision` 何时到达并阻塞在哪里。（1 分）
+3. `Logger` 如何让 `Drug` 无法及时释放锁。（1 分）
+4. 这个现象为什么不是普通死锁，但会破坏实时可预测性。（1 分）
 
-```c
-pwrite(fd, buf, 200, 4090);
+### Part C：全局资源顺序的证明题（4 分）
+
+另一位同学提出不用 PCP，只规定所有线程必须按全局顺序申请资源：
+
+```text
+Camera < MapDB < Arm < Flash < Speaker
 ```
 
-文件系统 block 大小为 `4096` 字节。
+证明：如果每个线程都严格按该顺序申请资源，并按任意顺序释放资源，则不可能出现由锁资源构成的 circular wait。要求使用反证法或最小元素法。
 
-1. 这次写涉及哪些 logical data block？各写入多少字节？（1 分）
-2. 为什么可能需要 read-modify-write？（1 分）
-3. 除数据块外，至少哪些 metadata 可能变 dirty？（1 分）
-4. 写完后文件大小是多少？（1 分）
+### Part D：Banker 视角的符号判定（5 分）
 
-### Part C：Dirty block eviction 与 delayed writes（4 分）
+把“用餐律师”推广成 `n` 个线程共享 `n` 个完全相同的设备 token，每个线程最多需要 `k` 个 token 才能完成并释放所有 token。当前所有线程都还没有完成。系统使用一个简化 Banker 规则：只有在批准请求后，仍存在至少一个线程能够最终拿到 `k` 个 token 并完成，才批准请求。
 
-1. Dirty buffer cache block 被选为 victim 时，为什么不能像 clean block 一样直接丢弃？（1 分）
-2. Delayed writes 带来两个性能收益是什么？（1 分）
-3. Delayed writes 制造的 crash window 是什么？（1 分）
-4. 如果 dirty block 是目录块，崩溃风险为什么比普通临时数据更严重？（1 分）
+1. 若当前可用 token 数为 $a$，线程 $i$ 当前已持有 $h_i$ 个 token，则“至少有一个线程能完成”的符号条件是什么？（2 分）
+2. 对经典情形 $n=5,\ k=2$，解释为什么“让每个人先拿 1 根筷子”是不安全的。（1 分）
+3. 对一般 $n,\ k$，构造一个 unsafe 但尚未 deadlock 的状态。（1 分）
+4. Banker 相比固定全局资源顺序，主要收益和主要代价分别是什么？（1 分）
 
-### Part D：Read-ahead 与缓存/VM 平衡（4 分）
+### Part E：实时可调度性中的 blocking 项（2 分）
 
-数据库顺序扫描文件 `scan.dat`，每次实际需要连续 128 个 block。系统可选择 read-ahead 窗口为 `0`、`8`、`128` 或 `4096` 个 block。
+在固定优先级实时分析中，常把低优先级临界区造成的最长阻塞记为 $B_i$。给出一个保守响应时间不等式的形式，说明 $C_i$、高优先级任务干扰和 $B_i$ 分别代表什么即可。
 
-1. 为什么窗口 `0` 可能吞吐较差？（1 分）
-2. 为什么窗口 `4096` 可能伤害其他应用？（1 分）
-3. 选择 `8` 和 `128` 的主要权衡是什么？（1 分）
-4. “buffer cache 和 virtual memory 之间的平衡”指什么？（1 分）
+:::tip 答案与解析
+### Part A
 
-### Part E：策略填空（3 分）
+1. `(1)` 是“可能锁 `R` 的任务中最高优先级”，也就是最小 priority number；`(2)` 是“高于”，即数值更小；`(3)` 是“继承/提升到被阻塞高优先级任务的优先级”。
+2. `ceiling(Speaker)=1`，`ceiling(MapDB)=2`，`ceiling(Arm)=3`。`MapDB` 可被 `Vision` 和 `Drug` 使用，其中最高优先级是 `Vision` 的 2。
 
-补全一个简化的 Use Once 伪代码：
+### Part B
 
-```c
-block_t *cache_read(blockno_t b, bool sequential_stream) {
-    block_t *blk = disk_read(b);
-    if (sequential_stream) {
-        blk->use_once = ____(1)____;
-        attach_to_temporary_list(blk);
-    } else {
-        insert_into_____(2)____(blk);
-    }
-    return blk;
-}
+一种构造是：`Drug` 先运行并获得 `MapDB`，进入较长临界区；随后 `Vision` 到达并请求 `MapDB`，因锁被 `Drug` 持有而阻塞；接着 `Logger` 变为 ready，若系统的普通调度/实现错误地让 `Logger` 或其他中等优先级 CPU 工作持续运行在 `Drug` 前面，`Drug` 无法获得 CPU 释放 `MapDB`，`Vision` 被间接延迟。严格说若 `Logger` 优先级低于 `Drug`，它不会抢占 `Drug`；因此真正的优先级反转需要一个优先级介于 `Vision` 和 `Drug` 之间的任务，或系统把 I/O bottom half/日志线程提升到中等优先级。关键结构是：高优先级等待低优先级锁持有者，而中间优先级工作阻止低优先级持有者运行。它不是普通死锁，因为锁持有者理论上能运行并释放锁；问题是调度策略让释放时间无上界，破坏实时可预测性。
 
-void release_after_use(block_t *blk) {
-    if (blk->use_once && !blk->dirty) {
-        ____(3)____(blk);
-    }
-}
+### Part C
+
+反证。假设存在 circular wait：$T_1$ 持有 $R_1$ 等待 $R_2$，$T_2$ 持有 $R_2$ 等待 $R_3$，依此类推，$T_m$ 持有 $R_m$ 等待 $R_1$。由于每个线程都按全局顺序申请资源，若线程持有 $R_i$ 又等待 $R_{i+1}$，必有：
+
+$$
+R_i < R_{i+1}
+$$
+
+沿环得到：
+
+$$
+R_1 < R_2 < \cdots < R_m < R_1
+$$
+
+这与严格全序的反自反性矛盾。因此 circular wait 不可能出现。
+
+### Part D
+
+1. 批准后若存在某个线程 `i` 满足：
+
+$$
+h_i + a \ge k
+$$
+
+则至少该线程可最终获得足够 token 完成并释放资源。这是必要的直观 Banker 检查之一。
+2. $n=5,\ k=2$ 时，如果五个线程各持有 1 个 token，则 $a=0$，每个线程还差 1 个 token，没有任何线程能完成释放，形成死锁。
+3. 对一般 $n,\ k$，令每个线程持有 $k-1$ 个 token，且 $a=0$。尚可在分配过程中到达这个状态；如果所有线程都还需要 1 个 token 才能完成，则已经 deadlock。若要 unsafe 但尚未 deadlock，可令 $a=1$、一个线程持有 $k-2$，其余持有接近上限，使当前可能还有一步可走，但若把最后一个 token 给错误线程会进入无人可完成状态。核心是：unsafe 表示存在请求序列会把系统推入不可完成状态，不等于当前已有环形等待。
+4. Banker 收益是比静态顺序更灵活，可能批准更多安全交错；代价是需要最大需求信息和运行时安全性检查，且实现复杂。
+
+### Part E
+
+一种保守形式是：
+
+$$
+R_i
+= C_i + B_i
++ \sum_{j \in \operatorname{hp}(i)}
+\left\lceil \frac{R_i}{T_j} \right\rceil C_j
+$$
+
+$C_i$ 是任务自身执行时间，$\operatorname{hp}(i)$ 是优先级高于 $i$ 的任务集合，求和项是高优先级任务在 $R_i$ 窗口内的抢占干扰，$B_i$ 是低优先级临界区导致的最长阻塞。若解出的响应时间满足：
+
+$$
+R_i \le D_i
+$$
+
+则任务 $i$ 在该模型下可满足 deadline。
+:::
+
+## 大题二：可热更新模型文件的 `mmap` 运行时（20 分）
+
+某推理服务把模型权重文件 `model.v1` 通过 `mmap` 映射到多个 worker 进程。为了热更新，控制进程会生成 `model.v2`，然后用 `rename` 替换路径 `model.current`。服务希望避免复制 20 GB 权重，又要处理文件被截断、访问模式变化和共享可见性。
+
+### Part A：File-backed page fault 流程填空（5 分）
+
+补全一次对 file-backed mapping 的缺页处理流程：
+
+```text
+CPU loads address x
+  -> PTE says ________________________(1)
+  -> trap into kernel
+  -> find VMA containing x, check ________________________(2)
+  -> compute file offset = ________________________(3)
+  -> look up page cache by (file object, page index)
+  -> if cache miss, submit disk read and put thread on ________________________(4)
+  -> install PTE with physical frame and permission
+  -> restart ________________________(5)
 ```
 
 每空 1 分。
 
+### Part B：热更新、truncate 与 SIGBUS（4 分）
+
+`worker W` 已经把 `model.current` 映射为 `MAP_SHARED | PROT_READ`，长度为 `20 GB`。控制进程错误地对同一个底层文件执行 `truncate(fd, 10 GB)`，而不是写新文件再 `rename`。
+
+1. 若 `W` 随后访问原 offset `15 GB`，这不是普通 protection fault；更合理的处理结果是什么？（1 分）
+2. 为什么“写新文件 + fsync + rename”比“原地 truncate + rewrite”更适合热更新？（1.5 分）
+3. `rename` 替换路径后，已经持有旧文件映射的 worker 会自动变成新文件内容吗？为什么？（1.5 分）
+
+### Part C：`mmap` vs `read` 的符号成本模型（5 分）
+
+一个文件有 $N$ 个页，每页大小为 $P$。用 `mmap` 顺序扫描时，假设每页第一次访问触发一次 minor/major fault，平均 fault 处理成本为 $F$，每页实际计算成本为 $A$。用 `read` 时，每个系统调用一次读取 $b$ 页，系统调用固定成本为 $S$，每页拷贝成本为 $C$，每页计算成本仍为 $A$。
+
+1. 写出 `mmap` 总成本的符号表达式。（1 分）
+2. 写出 `read` 总成本的符号表达式，忽略最后不足 `b` 页的取整误差。（1 分）
+3. 推导 `read` 比 `mmap` 更快的大致条件。（2 分）
+4. 这个模型说明了为什么“少一次用户态拷贝”并不总能让 `mmap` 更快？（1 分）
+
+### Part D：`MAP_SHARED`、`MAP_PRIVATE` 与 fork 后 COW（4 分）
+
+父进程映射同一文件的两段区域：
+
+```c
+char *s = mmap(NULL, len, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+char *p = mmap(NULL, len, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
+fork();
+```
+
+1. 子进程写 `s[0]='x'`，父进程随后读 `s[0]`，应看到什么语义？（1 分）
+2. 子进程写 `p[0]='y'`，父进程随后读 `p[0]`，应看到什么语义？（1 分）
+3. 对 `MAP_PRIVATE`，第一次写通常会触发什么机制？（1 分）
+4. 为什么两种映射的 flags 不能在映射建立后随意“就地切换”？（1 分）
+
+### Part E：访问模式提示设计（2 分）
+
+你要给运行时加一个 `advise(region, pattern)` 接口，pattern 包括 `SEQUENTIAL`、`RANDOM`、`WILLNEED`、`DONTNEED`。任选两个 pattern，说明 OS 可据此改变什么策略。
+
 :::tip 答案与解析
 ### Part A
 
-1. 普通 LRU：前四次 A/B/C/D miss；随后 A/B hit；S1/S2/S3/S4 四次 miss 并逐步挤出 C/D/A/B；最后 A/B/C/D 全部 miss。总 hit **2**，miss **12**。
-2. Use Once：前四次 miss；A/B hit；S1..S4 仍是 compulsory miss 但不进入主缓存；最后 A/B/C/D 都 hit。总 hit **6**，miss **8**。
-3. LRU 把一次性顺序扫描块误认为值得缓存的新近数据，导致热点块被污染性淘汰。
+1. 页无效或 non-resident。
+2. 地址范围与访问权限是否合法。
+3. 文件偏移为：
+
+$$
+\text{VMA.file\_offset} + (x - \text{VMA.start})
+$$
+
+再按页对齐得到文件页号。
+4. wait queue / blocked queue / I/O wait queue。
+5. faulting instruction。
 
 ### Part B
 
-1. Offset 4090 起写 200 字节，block 0 写 `4090..4095` 共 6 字节，block 1 写剩余 194 字节。
-2. 对 block 0 和 block 1 都是 partial-block write。若缓存中没有完整旧块，文件系统可能要先读旧块，再修改局部字节并写回，尤其 block 0 未覆盖整块。
-3. Block 1 需要新分配，free-space map/bitmap 会变 dirty；inode 的 size、mtime 和 block pointer 会变 dirty；若涉及间接块，间接块也会 dirty。
-4. 新文件大小为 `4090 + 200 = 4290` 字节。
+1. 访问映射范围内但已经超出底层文件当前大小的页，合理结果是向进程发送类似 `SIGBUS` 的同步异常，而不是简单调入页面。
+2. 新文件写好并 `fsync` 后再 `rename`，能让旧文件内容继续服务旧 worker，新路径原子指向新版本；原地 truncate 会破坏仍在使用旧 inode 的映射，并暴露半写状态。
+3. 不会。已有 mapping 绑定的是打开时的文件对象/inode 及其页缓存；`rename` 改变的是目录名到文件对象的映射，新打开者看到新文件，旧 worker 仍引用旧文件对象，直到关闭/munmap。
 
 ### Part C
 
-1. Dirty block 是内存中比磁盘新的版本，直接丢弃会丢失更新。必须写回或确保更新已由 journal/COW 等机制保护。
-2. 它可合并多次写、减少同步等待；也能让 allocator 更好地批量布局，提升顺序性。
-3. 写调用返回后，数据/metadata 可能只在内存中。如果此时崩溃，应用以为完成的更新可能没有持久化，甚至只持久化了一部分相关块。
-4. 目录块影响命名和可达性；目录项半更新可能造成名字指向错误 inode、文件丢失、link count 不一致等全局结构问题。
+1. `mmap` 的总成本可写为：
+
+$$
+T_{\text{mmap}} = N(F + A)
+$$
+
+2. `read` 的总成本可写为：
+
+$$
+T_{\text{read}} = \frac{N}{b}S + N(C + A)
+$$
+
+3. `read` 更快当：
+
+$$
+\frac{N}{b}S + N(C + A) < N(F + A)
+$$
+
+两边同除以 `N` 后得到：
+
+$$
+\frac{S}{b} + C < F
+$$
+
+也就是说，批量 read 的摊销 syscall 成本加拷贝成本小于每页 fault 成本时，`read` 更快。
+4. `mmap` 省掉显式 read 和一次拷贝，但把 I/O 边界变成 page fault；若每页 fault 成本高、预取不佳或访问只顺序扫描一次，fault 开销可能超过拷贝节省。
 
 ### Part D
 
-1. 没有 read-ahead 时，每个 block 可能串行等待 I/O 完成，无法利用顺序带宽和设备并行。
-2. 预取 4096 个 block 可能占用大量 cache 和 I/O 带宽，挤掉热点数据，增加其他应用 latency。
-3. 窗口 8 更保守，污染小但可能吞吐不足；窗口 128 匹配本次需求，吞吐好但若预测错误会浪费更多资源。
-4. 物理内存既可用作进程 resident pages，也可用作文件系统缓存。给 buffer cache 太多会挤压进程 working set；给 VM 太多又会降低文件 I/O 命中率。
+1. `MAP_SHARED` 写入共享文件页；父进程读同一映射位置应看到共享修改，持久化到磁盘的时间另由 writeback/msync 控制。
+2. `MAP_PRIVATE` 写入是进程私有；父进程不应看到子进程写入的 `'y'`，文件也不应因此改变。
+3. Copy-on-write：写 fault 后内核分配私有物理页，复制原内容，更新写者 PTE。
+4. flags 决定 VMA、页表权限、COW 语义和与 page cache 的关系。随意切换会破坏已有 PTE、共享页和 dirty/COW 状态的一致性，通常需要重新映射。
 
 ### Part E
 
-1. `true`
-2. `LRU/main_cache`
-3. `evict_or_free`
-
-语义上应表达：streaming block 可服务当前读，但不提升为长期缓存对象；释放后若 clean 可快速丢弃。
+`SEQUENTIAL` 可增大 read-ahead，并在页面用过后降低其缓存优先级。`RANDOM` 可减少预取，避免污染缓存。`WILLNEED` 可提前异步预取。`DONTNEED` 可让 OS 尽快回收 clean pages 或降低其优先级。
 :::
 
-## 大题四：崩溃中的文件创建与重命名（20 分）
+## 大题三：扫描抗性的 Buffer Cache 与在线构造（20 分）
 
-某简化文件系统要执行：
+某数据库有 `k` 个热点索引块 `H1..Hk`，buffer cache 容量恰好为 `k`。白天 workload 反复访问热点块；夜间 workload 会顺序扫描大量冷块 `S1,S2,...`。你要证明普通 LRU 的脆弱性，并设计一种 scan-resistant 策略。
 
-```sh
-echo "hi" > /d/x
-```
+### Part A：LRU 的对抗构造（5 分）
 
-它需要分配 inode `42`、分配数据块 `900`、写入数据 `"hi"`、初始化 inode，并在目录 `/d` 中加入目录项 `"x" -> 42`。涉及的磁盘块包括：
+假设一开始 cache 中正好是 `H1..Hk`，且 LRU 顺序从老到新为 `H1,H2,...,Hk`。
 
-- `IB`：inode bitmap
-- `DB`：data-block bitmap
-- `I42`：inode 42 所在 inode block
-- `D900`：数据块 900
-- `DIR`：目录 `/d` 的 data block
+1. 构造一个长度为 `k` 的冷块访问串，使所有热点块都被 LRU 淘汰。（1 分）
+2. 接着访问 `H1,H2,...,Hk`，会发生多少次 miss？（1 分）
+3. 证明：对任意确定性的“把每个 miss 装入主缓存”的 LRU 类策略，存在长度 $2k$ 的访问串使其至少发生 $2k$ 次 miss 或接近全 miss。（2 分）
+4. 这个构造说明了什么系统设计教训？（1 分）
 
-### Part A：Naive 写入顺序的崩溃点（5 分）
+### Part B：Two-Queue/Use-Once 流程填空（5 分）
 
-某错误实现按如下顺序写盘：
+设计一个简化 Two-Queue cache：
 
-```text
-1. write IB   // 标记 inode 42 已分配
-2. write DIR  // 加入 "x" -> 42
-3. write I42  // inode 指向 D900, size=2
-4. write DB   // 标记 data block 900 已分配
-5. write D900 // 写入 "hi"
-```
+- `A1`：probationary queue，保存第一次见到的块。
+- `Am`：main queue，保存至少第二次命中的热点块。
+- 顺序扫描被标记为 `use_once`，不进入 `Am`。
 
-分析以下 crash point 的主要不一致：
-
-1. crash after step 2, before step 3。（1.5 分）
-2. crash after step 3, before step 4。（1.5 分）
-3. crash after step 4, before step 5。（1 分）
-4. 哪一种不一致最可能让目录项指向垃圾 inode 或无效数据？（1 分）
-
-### Part B：Careful Ordering 设计（4 分）
-
-给出一种更安全的写入顺序，使得“指针或目录项持久化前，它指向的对象已经足够有效”。要求包含 `D900`、`DB`、`I42`、`IB`、`DIR` 五类写入，并说明这种顺序下 crash 后最多会出现什么较容易恢复的问题。
-
-### Part C：Journaling 记录与恢复（5 分）
-
-文件系统使用 redo journal。一次事务 T7 的 journal 可能包含：
+补全流程：
 
 ```text
-BEGIN T7
-UPDATE IB
-UPDATE DB
-UPDATE I42
-UPDATE DIR
-COMMIT T7
+on access block x:
+  if x in Am:
+      move x to MRU of Am
+  else if x in A1:
+      remove x from A1
+      insert x into ________________________(1)
+  else:
+      read x from disk
+      if x has use_once hint:
+          place x in ________________________(2)
+      else:
+          insert x into ________________________(3)
+
+on eviction:
+  prefer evicting clean blocks from ________________________(4)
+  dirty victims must first enter ________________________(5)
 ```
 
-为简单起见，数据块 `D900` 采用 ordered mode：先写数据块，再提交 metadata journal。
+每空 1 分。
 
-1. 为什么 ordered mode 要求 `D900` 在 `COMMIT T7` 前写到磁盘？（1 分）
-2. crash 后 journal 中只有 `BEGIN/UPDATE`，没有 `COMMIT`，recovery 应如何处理？（1 分）
-3. crash 后 journal 中已有 `COMMIT T7`，但 home location 只写回了一部分，recovery 应如何处理？（1.5 分）
-4. 为什么许多文件系统只 journal metadata，而不是 journal 所有 data？（1.5 分）
+### Part C：符号化预取窗口优化（4 分）
 
-### Part D：Copy-on-Write 版本切换（4 分）
+顺序读取 $N$ 个 block。若预取窗口为 $w$，每次 I/O 的固定 seek/提交成本为 $S$，每个 block 传输成本为 $T$。预取过大会污染缓存，抽象为额外代价 $\alpha w$。忽略取整，总代价模型：
 
-另一种文件系统采用 copy-on-write。它不会覆盖旧目录块或旧 inode block，而是写出新 `I42'`、新 `DIR'`，最后更新一个 root pointer 指向新树。
+$$
+\operatorname{Cost}(w)
+= \frac{N}{w}S + NT + \alpha w
+$$
 
-1. 为什么 COW 中 root pointer 的最后切换很关键？（1 分）
-2. crash 发生在写完 `I42'` 但没写 `DIR'` 时，mount 后应看到旧版本还是新版本？（1 分）
-3. crash 发生在 root pointer 已切换后，mount 后应看到什么？（1 分）
-4. COW 的一个代价是什么？（1 分）
+1. 对连续变量 $w > 0$，求使 $\operatorname{Cost}(w)$ 最小的 $w^*$。（2 分）
+2. 如果 $\alpha$ 增大，最优窗口如何变化？解释含义。（1 分）
+3. 真实系统中为什么还要把 $w^*$ 限制在上下界内？（1 分）
 
-### Part E：`fsck`、Journal 与 COW 对比（2 分）
+### Part D：Dirty metadata 的偏序约束（4 分）
 
-用两句话比较 `fsck`、journaling 和 COW 在恢复时间和正常写入开销上的差异。
+一次 `rename("tmp", "final")` 需要更新两个目录块 `D_old`、`D_new` 和 inode link count `I`。为了防止 crash 后出现“两个名字都消失”或“link count 明显错误”，文件系统定义如下偏序：
+
+```text
+log(D_new add final)  -> log(I linkcount update) -> log(D_old remove tmp) -> COMMIT
+```
+
+1. 用图或文字表示这四个事件的有向依赖关系。（1 分）
+2. 给出一个违反该偏序的写入顺序，并说明可能出现的坏状态。（1 分）
+3. 为什么 journal commit record 可以把这个偏序变成恢复时的二元规则？（1 分）
+4. 如果不使用 journal，只靠 delayed write，这个偏序为什么难以保证？（1 分）
+
+### Part E：证明题：Use-Once 保护热点集合（2 分）
+
+假设 cache 容量为 `k`，初始包含热点集合 `H`，且所有冷块访问都带 `use_once` 并在使用后立即丢弃。证明：任意长度的冷块顺序扫描不会把 `H` 中任何 clean 热点块从主缓存中淘汰。
 
 :::tip 答案与解析
 ### Part A
 
-1. `DIR` 已有 `"x" -> 42`，但 `I42` 尚未初始化。目录项可能指向垃圾 inode 或旧内容，这是危险的 dangling name。
-2. `I42` 指向 `D900` 且 size=2，但 `DB` 还没标记 900 已分配。未来 allocator 可能把 900 分给别人，造成双重分配；同时 `D900` 数据还没写，读取可能看到垃圾。
-3. Bitmap 和 inode 都说块 900 属于文件，但 `D900` 还没写 `"hi"`，文件内容可能是旧数据或垃圾。
-4. Crash after step 2 最直接导致目录项指向未初始化 inode；crash after step 3/4 则可能导致 inode 指向未初始化数据。
+1. 访问 `S1,S2,...,Sk`。每个 `Si` 都是 miss 并装入缓存，按 LRU 依次淘汰 `H1,H2,...,Hk`。
+2. 接着访问 `H1..Hk` 全部 miss，共 `k` 次 miss。
+3. 对初始热点全在缓存的情形，先用 $k$ 个互不相同且不在缓存中的冷块填满缓存，导致原热点全被替换；再访问原热点集合，因它们都不在缓存而全 miss。总访问长度 $2k$，产生 $2k$ 次 miss。若策略有某些保留细节，只要每个新 miss 都可能污染主缓存，就能构造足够长的冷块前缀挤出热点。
+4. 对一次性扫描，recency 不是 reuse 的好信号。文件系统需要 hints、分队列或 scan-resistant replacement，不能盲目信任 LRU。
 
 ### Part B
 
-一种更安全的顺序是：`write D900 -> write DB -> write I42 -> write IB -> write DIR`。核心原则是先写被指向的数据，再写声明其已分配的 metadata，再写包含指针的 inode，最后让目录项使文件可达。不同真实系统会细化 bitmap/inode 顺序，但必须避免“持久化指针指向未初始化对象”。这种顺序下，中途崩溃更可能造成不可达但已分配的 inode/block 泄漏，可由 `fsck` 扫描修复；比目录项指向垃圾安全。
+1. `Am`
+2. `temporary/use-once list`
+3. `A1`
+4. `A1` 或 temporary list
+5. `writeback/pageout queue`
+
+第一次见到的块先进 probationary queue；只有再次命中才说明可能有复用价值并晋升到 main queue。Use-once 块服务当前请求后尽快丢弃。Dirty victim 必须写回后才能真正释放。
 
 ### Part C
 
-1. Ordered mode 只 journal metadata。如果 `COMMIT` 后 metadata 被 replay，使 inode/目录指向 D900，那么 D900 必须已经包含正确用户数据，否则会暴露旧数据或垃圾。
-2. 没有 commit 的事务视为未完成，recovery 丢弃该 journal 片段，不把 UPDATE replay 到 home location。
-3. 有 commit 的事务必须 redo/replay：把 journal 中完整的 metadata updates 写到 home location，确保事务效果全有或全无。
-4. Journal 所有 data 会显著增加写放大和 journal 空间压力；metadata journaling 已能保护文件系统结构一致性。代价是用户数据持久化语义较弱，所以需要 ordered/writeback/data-journal 等模式区分。
+1. 对 $\operatorname{Cost}(w)$ 求导：
+
+$$
+\frac{d}{dw}\operatorname{Cost}(w)
+= -\frac{NS}{w^2} + \alpha
+$$
+
+令其为 0 得：
+
+$$
+w^* = \sqrt{\frac{NS}{\alpha}}
+$$
+
+2. $\alpha$ 越大，污染代价越高，$w^*$ 越小。含义是内存压力大或热点缓存价值高时，应更保守预取。
+3. 设备最大请求大小、内存上限、并发公平性、页缓存压力、访问模式误判和实现粒度都会要求 $w$ 有最小/最大限制。
 
 ### Part D
 
-1. Root pointer 决定哪棵树是当前一致版本。只有所有新块写好后才切换 root，才能保证 crash 后看到旧完整版本或新完整版本。
-2. 旧版本。root pointer 没切换，新块不可达，可之后回收。
-3. 新版本。只要 root pointer 更新本身是原子的或可恢复的，mount 后沿新 root 找到新目录和 inode。
-4. COW 会增加写放大和空间占用，也可能造成碎片；还需要垃圾回收旧版本和管理快照。
+1. 依赖链是 `D_new add final -> I linkcount update -> D_old remove tmp -> COMMIT`，后一个事件不能在前一个事件持久化前被认为 committed。
+2. 若先持久化 `D_old remove tmp`，但 crash 发生在 `D_new add final` 前，可能导致旧名字消失、新名字未出现，文件不可达。若 link count 更新顺序错误，也可能造成 inode 被过早回收或泄漏。
+3. Journal 把意图记录和 commit marker 持久化。恢复时没有 commit 就丢弃整组更新；有 commit 就按 log replay，避免观察到偏序中间状态。
+4. Delayed write 可能让磁盘实际写入顺序与程序发起顺序不同；设备缓存也可能重排。没有 journal/barrier/fsync，crash 可能暴露任意子集，偏序难以跨崩溃保证。
 
 ### Part E
 
-`fsck` 依赖崩溃后扫描全局 metadata，正常写入开销低但恢复时间可能与磁盘大小成正比。Journaling 正常写入多写 log 但恢复只扫描 journal；COW 正常写入新块和 root 切换，恢复简单，但写放大、碎片和空间管理成本更高。
+Use-once 冷块不进入主缓存，或进入临时列表后立即可回收。因此冷块扫描只消耗临时缓冲，不参与主缓存的 victim 选择。若热点集合 `H` 中的 clean 块只驻留在主缓存，且主缓存 eviction 不从 `H` 中选择来容纳 use-once 块，则扫描长度无论多长都不会淘汰 `H`。证明的不变量是：每次 cold access 前后，主缓存中的 `H` 集合保持不变。
 :::
 
-## 大题五：跨机转账的 2PC 状态机（20 分）
+## 大题四：应用级崩溃一致性：安全替换配置文件（20 分）
 
-银行系统把账户分片存储在两个 shard 上。事务 `TX88` 要从账户 A 所在 shard `WA` 扣款 100，并给账户 B 所在 shard `WB` 加款 100。协调者为 `C`。系统使用 Two-Phase Commit，并要求关键状态写入 stable storage。
-
-### Part A：协议消息序列（4 分）
-
-无故障且两个 worker 都同意提交时，写出 2PC 的主要消息序列。要求包含 prepare/vote/decision/ack 四类动作。
-
-### Part B：Stable log 应记录什么？（4 分）
-
-1. Worker 在发送 `VOTE-COMMIT` 前为什么必须把自己的 vote 记录到 stable storage？（1.5 分）
-2. Coordinator 在发送全局 `COMMIT` 前为什么必须先把 decision 记录到 stable storage？（1.5 分）
-3. 如果 worker 在投票前崩溃，恢复后为什么 abort 通常是安全的？（1 分）
-
-### Part C：故障场景推理（5 分）
-
-判断每个场景下参与者应该 commit、abort 还是 block，并说明理由。
-
-1. `WA` 回复 `VOTE-ABORT`，`WB` 回复 `VOTE-COMMIT`。（1 分）
-2. `WA` 和 `WB` 都已写入并发送 `VOTE-COMMIT`，`C` 崩溃，且没有任何 worker 收到最终决定。（1.5 分）
-3. `C` 已写入 `COMMIT`，并把 `COMMIT` 发给 `WA`；`WA` ack 后，`C` 崩溃，`WB` 仍在 READY 状态。（1.5 分）
-4. `WB` 在收到 prepare 后、写 vote 前崩溃，`C` 等待超时。（1 分）
-
-### Part D：Two General's Paradox 与 2PC 的目标（3 分）
-
-1. Two General's Paradox 说明了不可靠消息系统中的什么不可能性？（1 分）
-2. 2PC 是否解决“同时行动”？它真正解决的是什么问题？（1 分）
-3. 为什么 2PC 仍可能 blocking？（1 分）
-
-### Part E：状态机填空与超时策略（4 分）
-
-补全 worker 端状态机描述：
+一个数据库把关键配置保存在 `config.json`。更新时不能让崩溃后出现“旧配置没了，新配置也不完整”。应用开发者准备采用常见的 write-temp-and-rename 协议：
 
 ```text
-INIT --prepare received--> ____(1)____
-____(1)____ --local yes, log vote--> READY
-____(1)____ --local no or timeout before vote--> ABORT
-READY --global commit--> COMMIT
-READY --global abort--> ABORT
-READY --coordinator unreachable--> ____(2)____
+write config.tmp
+fsync(config.tmp)
+rename(config.tmp, config.json)
+fsync(parent directory)
 ```
 
-1. 填写 `(1)` 和 `(2)`。（1 分）
-2. 为什么 `(2)` 不能简单写成 ABORT？（1 分）
-3. 给出一个工程上缓解 blocking 的办法，但说明它引入的新假设或复杂性。（2 分）
+底层文件系统可能 delayed write，目录项和 inode 更新可能被缓存。
+
+### Part A：流程填空（4 分）
+
+补全安全更新流程中的目的：
+
+```text
+1. write config.tmp       // create ________________________(1)
+2. fsync(config.tmp)      // force ________________________(2)
+3. rename(tmp, final)     // atomically switch ________________________(3)
+4. fsync(parent dir)      // force ________________________(4)
+```
+
+每空 1 分。
+
+### Part B：省略步骤的反例构造（6 分）
+
+分别构造一个 crash 场景，说明省略下列步骤可能导致什么问题：
+
+1. 省略 `fsync(config.tmp)`。（2 分）
+2. 省略 `fsync(parent directory)`。（2 分）
+3. 直接原地覆盖 `config.json`，不用 temp + rename。（2 分）
+
+### Part C：Write-ahead logging 的不变量（4 分）
+
+考虑一个 redo journal。它有三类记录：`BEGIN(T)`、若干 `UPDATE(T, block, new_image)`、`COMMIT(T)`。
+
+1. 写出 recovery 的二元规则。（1 分）
+2. 证明 redo recovery 是幂等的：同一个 committed transaction replay 两次不会比 replay 一次更糟。（1.5 分）
+3. 为什么 `COMMIT(T)` 必须在所有 `UPDATE` 记录 durable 之后才能 durable？（1.5 分）
+
+### Part D：Mini log 解析题（4 分）
+
+Crash 后 journal 中有以下记录，按顺序排列：
+
+```text
+BEGIN T1
+UPDATE T1 A := a1
+COMMIT T1
+BEGIN T2
+UPDATE T2 B := b2
+BEGIN T3
+UPDATE T3 C := c3
+COMMIT T3
+```
+
+1. 哪些事务应 replay？哪些应 discard？（1.5 分）
+2. 如果 home location 中 `A` 已经是 `a1`，replay T1 是否安全？（1 分）
+3. 如果 T3 的 `COMMIT` durable 了，但 `UPDATE T3 C:=c3` 的日志块其实没有 durable，这违反了哪个规则？（1 分）
+4. 日志扫描时为什么需要事务 id？（0.5 分）
+
+### Part E：COW 与 Journaling 的构造性比较（2 分）
+
+给出一个只包含两个指针块 `Root -> Dir -> Inode` 的小文件系统。说明 journaling 和 copy-on-write 分别如何让 `Dir` 的一次更新在 crash 后呈现 all-or-nothing。
 
 :::tip 答案与解析
 ### Part A
 
-典型无故障序列：
-
-1. `C -> WA/WB: PREPARE(TX88)`
-2. `WA/WB` 本地检查可提交，把 vote 写入 stable log，然后发送 `VOTE-COMMIT`
-3. `C` 收到 unanimous commit votes，把 `COMMIT(TX88)` 写入 stable log
-4. `C -> WA/WB: GLOBAL-COMMIT`
-5. `WA/WB` 执行 commit，写本地 commit log，释放锁，回复 `ACK`
-6. `C` 收齐 ACK 后可写 `END/FORGET`
+1. 新版本内容。
+2. 临时文件的数据和必要 inode metadata 已经到达持久存储。
+3. 目录名 `config.json` 从旧 inode 切到新 inode。
+4. 目录项更新本身，也就是 rename 的命名效果。
 
 ### Part B
 
-1. Worker 一旦投 `VOTE-COMMIT`，就承诺不再单方面 abort。若崩溃恢复后忘记自己投过 commit，可能错误 abort，破坏全局一致性。
-2. Coordinator 的 decision 是全局真相。若先发 commit 再崩溃但未持久记录，恢复后可能忘记决定，导致有的 worker commit、有的 abort 或永久不一致。
-3. 投票前 worker 尚未承诺 commit；coordinator 等不到该 worker 的 yes vote 时，按 2PC 规则不能 commit，因此 abort 是安全的。
+1. 若省略 `fsync(config.tmp)`，crash 可能发生在 rename 后但临时文件数据尚未落盘；恢复后 `config.json` 指向新 inode，但内容为空、旧数据或部分数据。
+2. 若省略目录 `fsync`，文件内容可能已 durable，但 rename 的目录项更新未 durable；恢复后可能仍看到旧 `config.json`，或在某些文件系统语义下看到临时文件状态，应用无法确认切换是否发生。
+3. 原地覆盖可能让旧文件前半部分是新内容、后半部分是旧内容，或者 metadata 指向部分更新数据；crash 后既不是旧完整版本，也不是新完整版本。
 
 ### Part C
 
-1. 全局 abort。2PC 只有 unanimous `VOTE-COMMIT` 才能 commit；任一 abort vote 都导致 abort。
-2. `WA/WB` 都在 READY，不能单方面 abort，也不知道 coordinator 是否已决定 commit，因此必须 block，等待 coordinator 恢复或从其他参与者得知决定。
-3. 全局决定已经是 commit。`WB` 若能联系到 `WA` 并确认其已收到 commit，可以学习决定并 commit；若联系不到任何知道决定的节点，它在纯 2PC 中仍可能 block，直到 coordinator 恢复。
-4. `WB` vote 前失败，coordinator 超时后可决定 abort。因为 commit 需要所有 worker 的 `VOTE-COMMIT`。
+1. 有 `COMMIT(T)` 的事务 redo；没有 commit 的事务 discard。
+2. Redo 写的是确定的 `new_image` 到指定 block。第一次 replay 后 block 已是 `new_image`；第二次写入同样内容，状态不再变化。因此幂等。
+3. 如果 commit 先 durable，而某些 update log 未 durable，recovery 会认为事务必须 replay，却缺少完整新镜像，无法保证 all-or-nothing。这违反 write-ahead logging 的基本顺序。
 
 ### Part D
 
-1. 它说明在不可靠消息上，有限轮确认无法保证双方获得“对方也知道”的共同知识，因此不能保证 simultaneous action。
-2. 2PC 不保证同一物理时刻行动；它解决的是所有正确参与者最终遵循同一个 commit/abort 决定的 atomic commitment。
-3. READY worker 已承诺不能单方面 abort，但又不知道最终决定；coordinator failure 或通信中断时，它只能等待，因此 blocking 是 2PC 简洁性的代价。
+1. T1 和 T3 有 commit，应 replay；T2 没有 commit，应 discard。
+2. 安全。Redo 幂等，重复写 `A:=a1` 不改变语义。
+3. 违反“commit durable 前，事务所有 update log records 必须 durable”的 write-ahead 顺序。
+4. 多个事务记录可能交错，事务 id 用来把 BEGIN/UPDATE/COMMIT 归组。
 
 ### Part E
 
-1. `(1)=WAITING_FOR_LOCAL_DECISION` 或 `PREPARED_CHECKING`，语义是收到 prepare 后做本地检查；`(2)=BLOCK/WAIT`。
-2. READY 表示已经投 yes 并持久承诺，最终决定可能已经是 commit。若直接 abort，可能与已 commit 的其他参与者不一致。
-3. 可使用 replicated coordinator/consensus log，让 decision 存在 Raft/Paxos 复制组中，coordinator 单点故障不再让 READY worker 无处查询；代价是引入多数派可用性假设、更多消息轮次和更复杂的复制协议。也可使用 3PC，但它需要更强的网络同步/超时假设。
+Journaling：把 `Dir` 的新内容或 patch 写入 log，写 commit record；恢复时无 commit 则忽略，有 commit 则把新 `Dir` redo 到 home location。Copy-on-write：写出新 `Dir'`，让它指向旧 `Inode` 或新 inode，最后原子更新 `Root` 指向 `Dir'`；root 未切换则看到旧树，已切换则看到新树。
+:::
+
+## 大题五：2PC 的不确定区间与非阻塞化改造（20 分）
+
+某分布式课程平台在三个 shard 上提交一次选课事务 `T`：`S1` 扣减课程容量，`S2` 写学生课表，`S3` 写审计日志。协调者为 `C`。系统使用 Two-Phase Commit，但你要分析它为什么 blocking，并提出改造。
+
+### Part A：Participant 状态机填空（4 分）
+
+补全 participant 的状态机：
+
+```text
+INIT --PREPARE received--> LOCAL_CHECK
+LOCAL_CHECK --cannot commit--> ________________________(1)
+LOCAL_CHECK --can commit; force log YES--> ________________________(2)
+____(2)____ --GLOBAL_COMMIT--> ________________________(3)
+____(2)____ --GLOBAL_ABORT--> ________________________(4)
+```
+
+每空 1 分。
+
+### Part B：日志表决策题（5 分）
+
+某节点 crash 后恢复，只能看到自己的 stable log。判断它能否单方面决定：
+
+| 本地 log 中最后相关记录 | 能否单方面决定？ | 决定 |
+| --- | --- | --- |
+| 没有 `YES`，也没有 decision | ? | ? |
+| `YES`，没有 decision | ? | ? |
+| `GLOBAL_ABORT` | ? | ? |
+| `GLOBAL_COMMIT` | ? | ? |
+
+填写表格并说明最关键的一行。
+
+### Part C：不可单方面 abort 的不可区分性证明（4 分）
+
+证明：处于 READY/YES 状态且没有收到 decision 的 participant，不能仅因为 coordinator 暂时不可达就单方面 abort。要求用两个执行历史 `H_commit` 与 `H_abort/unknown` 的不可区分性说明。
+
+### Part D：多数派决策日志改造（5 分）
+
+为了降低 blocking，系统把 coordinator 的 decision log 复制到 $2f+1$ 个副本上。只有当某个 decision 写入至少 $f+1$ 个副本后，才向 participants 发送 decision。
+
+1. 为什么 $2f+1$ 个副本可以容忍 $f$ 个副本 crash 后仍读到已提交 decision？（1.5 分）
+2. 证明任意两个大小为 $f+1$ 的多数集合必相交。（1.5 分）
+3. 这种改造解决了 2PC 的哪类 blocking？仍不能解决什么问题？（1 分）
+4. 它引入了什么成本？（1 分）
+
+### Part E：2PC 与 Two-Phase Locking 区分（2 分）
+
+有同学把 2PC 和 2PL 混为一谈。请用两句话区分它们的目标：一个解决什么一致性问题，另一个解决什么并发控制问题？
+
+:::tip 答案与解析
+### Part A
+
+1. `ABORT`
+2. `READY` 或 `UNCERTAIN`
+3. `COMMIT`
+4. `ABORT`
+
+READY/UNCERTAIN 是 2PC 的关键状态：participant 已经持久承诺 yes，但还不知道全局决定。
+
+### Part B
+
+| 本地 log 中最后相关记录 | 能否单方面决定？ | 决定 |
+| --- | --- | --- |
+| 没有 `YES`，也没有 decision | 能 | ABORT |
+| `YES`，没有 decision | 不能 | BLOCK/QUERY |
+| `GLOBAL_ABORT` | 能 | ABORT |
+| `GLOBAL_COMMIT` | 能 | COMMIT |
+
+最关键的一行是 `YES` 但无 decision：该节点已经承诺如果全局 commit 就必须 commit，而 coordinator 可能已经把 commit 告诉了别人；单方面 abort 会破坏 atomicity。
+
+### Part C
+
+考虑 participant P 的本地视角：它已写 `YES`，之后 coordinator 不可达，且 P 没收到 decision。在历史 `H_commit` 中，coordinator 已收齐所有 YES，持久写入 COMMIT，并把 COMMIT 发给另一个 participant 后崩溃；在历史 `H_abort/unknown` 中，coordinator 尚未决定或最终会 abort。对 P 来说，这两个历史都表现为“我写了 YES，但没有收到消息，coordinator 不可达”，本地观测不可区分。若 P 在这种观测下选择 abort，则在 `H_commit` 中会与已 commit 的节点冲突；因此 P 不能单方面 abort。
+
+### Part D
+
+1. Decision 写入至少 $f+1$ 个副本；最多 $f$ 个 crash，因此至少还有一个保存该 decision 的副本存活可读。
+2. 在 $2f+1$ 个元素中，两个大小为 $f+1$ 的集合若不相交，总大小至少 $2f+2$，超过全集大小 $2f+1$，矛盾。因此必相交。
+3. 它缓解 coordinator 单点崩溃导致 participants 无处查询 decision 的 blocking。它仍不能让未获得多数派 decision 的事务凭空完成，也不能在网络分区导致多数派不可达时保证所有节点继续前进。
+4. 成本包括额外副本、更多消息轮次、写入延迟、复制协议复杂性和多数派可用性假设。
+
+### Part E
+
+2PC 是分布式 commit 协议，目标是让多个节点对同一事务的 commit/abort 达成原子一致决定。2PL 是并发控制协议，目标是通过先获取锁、后释放锁的规则保证并发事务的 serializability；它不负责跨机器最终 commit 决策。
 :::

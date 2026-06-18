@@ -117,6 +117,12 @@
     return `#/cards/${subsection.id}`;
   }
 
+  function cardLocation(card) {
+    const section = sectionMap.get(card.sectionId);
+    const subsection = card.subsectionId ? subsectionMap.get(card.subsectionId) : null;
+    return [section?.title, subsection?.title].filter(Boolean).join(" / ");
+  }
+
   function breadcrumb(items) {
     const body = items
       .map((item, index) => {
@@ -284,7 +290,7 @@
       ${pageHead("随机抽题", [
         { label: "首页", href: "#/" },
         { label: "随机抽题" },
-      ])}
+      ], `题目位置：${cardLocation(card)}`)}
       <article class="random-panel">
         <section class="content-panel question-panel">
           <h2 class="answer-title">Question</h2>

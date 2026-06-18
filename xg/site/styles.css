@@ -91,6 +91,9 @@ a {
 
 .top-nav a,
 .plain-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 38px;
   padding: 0 14px;
   border: 1px solid rgba(141, 30, 30, 0.16);
@@ -98,6 +101,8 @@ a {
   color: var(--red-deep);
   background: rgba(255, 253, 247, 0.74);
   cursor: pointer;
+  line-height: 1;
+  text-align: center;
 }
 
 .plain-button:hover,
@@ -410,6 +415,12 @@ h3 {
   margin-top: 0.45em;
 }
 
+.markdown-body li ol {
+  margin-left: 0.1rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(181, 139, 59, 0.18);
+}
+
 .markdown-body ul > li::before {
   content: "";
   position: absolute;
@@ -448,6 +459,23 @@ h3 {
   font-size: 0.78rem;
   font-weight: 700;
   line-height: 1;
+}
+
+.markdown-body li ol > li {
+  padding-left: 2.45rem;
+}
+
+.markdown-body li ol > li::before {
+  content: "(" counter(item) ")";
+  top: 0.26em;
+  width: 1.86rem;
+  height: 1.34rem;
+  border-color: rgba(181, 139, 59, 0.34);
+  border-radius: 4px;
+  color: var(--gold);
+  background: #fffaf0;
+  box-shadow: inset 0 0 0 1px rgba(255, 253, 247, 0.75);
+  font-size: 0.74rem;
 }
 
 .fade-in {

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>背习概</title>
+    <script>
+      const target = new URL("./site/index.html", window.location.href);
+      target.hash = window.location.hash;
+      window.location.replace(target.href);
+    </script>
+  </head>
+  <body>
+    <p><a href="./site/index.html">进入背习概</a></p>
+  </body>
+</html>
